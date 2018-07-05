@@ -336,5 +336,16 @@ enum rpl_mode rpl_get_mode(void);
  */
 int rpl_has_downward_route(void);
 
+extern uint8_t rpl_sdn_dao_received[50];
+
+#if UIP_CONF_IPV6_SDN
+/**
+ * RPL SDN functionality.
+ */
+typedef void (* rpl_sdn_dag_joined_callback_t)(void);
+void register_dag_joined_callback(rpl_sdn_dag_joined_callback_t callback);
+void rpl_sdn_set_instance_properties(uint8_t dio_interval, uint8_t dfrt_lifetime);
+#endif /* UIP_CONF_IPV6_SDN */
+
 /*---------------------------------------------------------------------------*/
 #endif /* RPL_H */

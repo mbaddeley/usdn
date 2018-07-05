@@ -50,8 +50,18 @@
 
 #if RPL_WITH_NON_STORING
 
-#define DEBUG DEBUG_NONE
+#define DEBUG 0
 #include "net/ip/uip-debug.h"
+
+#if WITH_SDN_STATS
+#include "rpl.h"
+// NB: Need this here so we can output when we receive the dao
+/* Log configuration */
+#include "sys/log-ng.h"
+#define LOG_MODULE "RPL"
+#define LOG_LEVEL LOG_LEVEL_STAT
+#endif
+
 
 #include <limits.h>
 #include <string.h>
@@ -86,13 +96,46 @@ rpl_ns_get_node(const rpl_dag_t *dag, const uip_ipaddr_t *addr)
 {
   rpl_ns_node_t *l;
   for(l = list_head(nodelist); l != NULL; l = list_item_next(l)) {
-    /* Compare prefix and node identifier */
     if(node_matches_address(dag, l, addr)) {
       return l;
     }
   }
   return NULL;
 }
+
+void
+rpl_ns_print_nodelist(const rpl_dag_t *dag, const uip_ipaddr_t *addr)
+{
+  rpl_ns_node_t *l;
+  PRINTF("Looking for ns node ");
+  PRINT6ADDR(addr);
+  PRINTF(" in dag ");
+  PRINT6ADDR(&dag->dag_id);
+  PRINTF(" with LL ");
+  PRINTLLADDR((uip_lladdr_t *)addr + 8);
+  PRINTF("... \n");
+  for(l = list_head(nodelist); l != NULL; l = list_item_next(l)) {
+    PRINTLLADDR((uip_lladdr_t *)&l->link_identifier);
+    PRINTF("\n");
+    if(dag != l->dag) {
+      PRINTF("DAG != NODE->DAG\n");
+    }
+    if(memcmp(addr, &l->dag->dag_id, 8)) {
+      PRINTF("addr == node->dag->dag_id\n");
+    }
+    if(memcmp(((const unsigned char *)addr) + 8, l->link_identifier, 8)) {
+      PRINTF("addr == node->link_id\n");
+    }
+    /* Compare prefix and node identifier */
+    if(node_matches_address(dag, l, addr)) {
+      PRINTF("FOUND NODE!!!\n");
+      return;
+    }
+  }
+  PRINTF("No match :(\n");
+  return;
+}
+
 /*---------------------------------------------------------------------------*/
 int
 rpl_ns_is_node_reachable(const rpl_dag_t *dag, const uip_ipaddr_t *addr)
@@ -144,6 +187,12 @@ rpl_ns_update_node(rpl_dag_t *dag, const uip_ipaddr_t *child, const uip_ipaddr_t
     child_node->parent = NULL;
     list_add(nodelist, child_node);
     num_nodes++;
+// #if WITH_SDN_STATS
+//     if(!rpl_sdn_dao_received[child->u8[15]]) {
+//       PRINTST("SDN-RPL", "n:%d dao:1", child->u8[15]);
+//       rpl_sdn_dao_received[child->u8[15]] = 1;
+//     }
+// #endif
   }
 
   /* Initialize node */

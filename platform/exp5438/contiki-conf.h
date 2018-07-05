@@ -56,6 +56,12 @@
 #define QUEUEBUF_CONF_NUM                8
 #endif
 
+/* The TSCH default slot length of 10ms is a bit too short for this platform,
+ * use 15ms instead. */
+#ifndef TSCH_CONF_DEFAULT_TIMESLOT_LENGTH
+  #define TSCH_CONF_DEFAULT_TIMESLOT_LENGTH 15000
+#endif
+
 #else /* NETSTACK_CONF_WITH_IPV6 */
 
 /* Network setup for non-IPv6 (rime). */

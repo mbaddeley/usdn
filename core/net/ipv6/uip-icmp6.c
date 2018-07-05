@@ -58,6 +58,13 @@
 #define PRINT6ADDR(addr)
 #endif
 
+#if WITH_SDN_STATS
+/* Log configuration */
+#include "sys/log-ng.h"
+#define LOG_MODULE "SDN-STAT"
+#define LOG_LEVEL LOG_LEVEL_STAT
+#endif
+
 #define UIP_IP_BUF                ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
 #define UIP_ICMP_BUF            ((struct uip_icmp_hdr *)&uip_buf[uip_l2_l3_hdr_len])
 #define UIP_ICMP6_ERROR_BUF  ((struct uip_icmp6_error *)&uip_buf[uip_l2_l3_icmp_hdr_len])
@@ -291,6 +298,10 @@ uip_icmp6_send(const uip_ipaddr_t *dest, int type, int code, int payload_len)
 
   UIP_STAT(++uip_stat.icmp.sent);
   UIP_STAT(++uip_stat.ip.sent);
+
+#ifdef WITH_SDN_STATS
+  LOG_STAT("type:%d code:%d\n", type, code);
+#endif
 
   tcpip_ipv6_output();
 }

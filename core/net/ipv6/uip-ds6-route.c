@@ -112,10 +112,10 @@ assert_nbr_routes_list_sane(void)
 
   /* Make sure that the route list has as many entries as the
      num_routes vairable. */
-  if(count < num_routes) {
-    printf("uip-ds6-route.c: assert_nbr_routes_list_sane too few entries on route list: should be %d, is %d, max %d\n",
-           num_routes, count, UIP_CONF_MAX_ROUTES);
-  }
+  // if(count < num_routes) {
+  //   printf("uip-ds6-route.c: assert_nbr_routes_list_sane too few entries on route list: should be %d, is %d, max %d\n",
+  //          num_routes, count, UIP_CONF_MAX_ROUTES);
+  // }
 }
 #endif /* DEBUG != DEBUG_NONE */
 /*---------------------------------------------------------------------------*/

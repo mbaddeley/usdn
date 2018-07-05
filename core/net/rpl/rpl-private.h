@@ -335,7 +335,7 @@ extern rpl_stats_t rpl_stats;
 /* RPL macros. */
 
 #if RPL_CONF_STATS
-#define RPL_STAT(code)	(code) 
+#define RPL_STAT(code)	(code)
 #else
 #define RPL_STAT(code)
 #endif /* RPL_CONF_STATS */
@@ -404,5 +404,10 @@ void rpl_poison_routes(rpl_dag_t *, rpl_parent_t *);
 
 
 rpl_instance_t *rpl_get_default_instance(void);
+
+#if UIP_CONF_IPV6_SDN
+/* RPL SDN functionality */
+void rpl_sdn_dag_joined_callback(void);
+#endif /* UIP_CONF_IPV6_SDN */
 
 #endif /* RPL_PRIVATE_H */

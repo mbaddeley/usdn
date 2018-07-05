@@ -52,9 +52,13 @@
 #include "net/rpl/rpl-private.h"
 #endif
 
+#if UIP_CONF_IPV6_SDN
+#include "net/sdn/sdn-cd.h"
+#endif
+
 #include <string.h>
 
-#define DEBUG DEBUG_NONE
+#define DEBUG 0
 #include "net/ip/uip-debug.h"
 
 #if UIP_LOGGING
@@ -75,6 +79,10 @@ extern struct uip_fallback_interface UIP_FALLBACK_INTERFACE;
 
 #if UIP_CONF_IPV6_RPL
 #include "rpl/rpl.h"
+#endif
+
+#if UIP_CONF_IPV6_SDN && (SDN_CONTROLLER_TYPE == SDN_CONTROLLER_ATOM)
+#include "atom.h"
 #endif
 
 process_event_t tcpip_event;
@@ -548,7 +556,19 @@ tcpip_ipv6_output(void)
     return;
   }
 
+#if UIP_CONF_IPV6_SDN && (SDN_CONTROLLER_TYPE == SDN_CONTROLLER_ATOM)
+  if(sdn_is_ctrl_addr(&UIP_IP_BUF->destipaddr)) {
+    PRINTF("tcpip_ipv6_output: Posting to ATOM\n");
+    atom_post(&sb_usdn);
+    uip_clear_buf();
+    return;
+  }
+#endif /* UIP_CONF_IPV6_SDN */
+
 #if UIP_CONF_IPV6_RPL
+  PRINTF("tcpip_ipv6_output: Destination address is ");
+  PRINT6ADDR(&UIP_IP_BUF->destipaddr);
+  PRINTF("\n");
   if(!rpl_update_header()) {
     /* Packet can not be forwarded */
     PRINTF("tcpip_ipv6_output: RPL header update error\n");
@@ -586,8 +606,14 @@ tcpip_ipv6_output(void)
       if(route == NULL) {
         PRINTF("tcpip_ipv6_output: no route found, using default route\n");
         nexthop = uip_ds6_defrt_choose();
+        PRINTF("DEFAULT ROUTE WAS\n");
+        PRINT6ADDR(nexthop);
+        PRINTF("\n");
         if(nexthop == NULL) {
 #ifdef UIP_FALLBACK_INTERFACE
+#if UIP_CONF_IPV6_SDN
+        if(!uip_ipaddr_cmp(&UIP_IP_BUF->srcipaddr, &DEFAULT_CONTROLLER->ipaddr)) {
+#endif
           PRINTF("FALLBACK: removing ext hdrs & setting proto %d %d\n",
               uip_ext_len, *((uint8_t *)UIP_IP_BUF + 40));
           if(uip_ext_len > 0) {
@@ -607,9 +633,14 @@ tcpip_ipv6_output(void)
             tcpip_ipv6_output();
             return;
           }
+#if UIP_CONF_IPV6_SDN
+          PRINTF("ERROR: Fallback is controller (me)\n");
+        }
+#endif
 #else
           PRINTF("tcpip_ipv6_output: Destination off-link but no route\n");
 #endif /* !UIP_FALLBACK_INTERFACE */
+
           uip_clear_buf();
           return;
         }
@@ -694,7 +725,7 @@ tcpip_ipv6_output(void)
 #else /* UIP_ND6_SEND_NS */
       PRINTF("tcpip_ipv6_output: neighbor not in cache\n");
       uip_len = 0;
-      return;  
+      return;
 #endif /* UIP_ND6_SEND_NS */
     } else {
 #if UIP_ND6_SEND_NS
@@ -721,6 +752,9 @@ tcpip_ipv6_output(void)
       }
 #endif /* UIP_ND6_SEND_NS */
 
+      PRINTF("tcpip_ipv6_output: sending to ");
+      PRINT6ADDR(&nbr->ipaddr);
+      PRINTF("\n");
       tcpip_output(uip_ds6_nbr_get_ll(nbr));
 
 #if UIP_CONF_IPV6_QUEUE_PKT
@@ -743,6 +777,7 @@ tcpip_ipv6_output(void)
     }
   }
   /* Multicast IP destination address. */
+  PRINTF("tcpip_ipv6_output: sending to multicast ff02::1a\n");
   tcpip_output(NULL);
   uip_clear_buf();
 }

@@ -51,7 +51,7 @@
 #include "net/rpl/rpl-ns.h"
 #include "net/packetbuf.h"
 
-#define DEBUG DEBUG_NONE
+#define DEBUG 0
 #include "net/ip/uip-debug.h"
 
 #include <limits.h>
@@ -354,12 +354,15 @@ insert_srh_header(void)
 
   dest_node = rpl_ns_get_node(dag, &UIP_IP_BUF->destipaddr);
   if(dest_node == NULL) {
+    rpl_ns_print_nodelist(dag, &UIP_IP_BUF->destipaddr);
     /* The destination is not found, skip SRH insertion */
+    PRINTF("RPL: SRH destination not found, skip SRH\n");
     return 1;
   }
 
   root_node = rpl_ns_get_node(dag, &dag->dag_id);
   if(root_node == NULL) {
+    rpl_ns_print_nodelist(dag, &dag->dag_id);
     PRINTF("RPL: SRH root node not found\n");
     return 0;
   }
@@ -507,10 +510,10 @@ update_hbh_header(void)
       if((UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_DOWN)) {
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_FWD_ERR;
-          PRINTF("RPL forwarding error\n");
+          PRINTF("RPL: Forwarding error\n");
           /* We should send back the packet to the originating parent,
                 but it is not feasible yet, so we send a No-Path DAO instead */
-          PRINTF("RPL generate No-Path DAO\n");
+          PRINTF("RPL: Generate No-Path DAO\n");
           parent = rpl_get_parent((uip_lladdr_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER));
           if(parent != NULL) {
             dao_output_target(parent, &UIP_IP_BUF->destipaddr, RPL_ZERO_LIFETIME);
@@ -526,11 +529,11 @@ update_hbh_header(void)
           /* No route was found, so this packet will go towards the RPL
                 root. If so, we should not set the down flag. */
           UIP_EXT_HDR_OPT_RPL_BUF->flags &= ~RPL_HDR_OPT_DOWN;
-          PRINTF("RPL option going up\n");
+          PRINTF("RPL: Option going up\n");
         } else {
           /* A DAO route was found so we set the down flag. */
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
-          PRINTF("RPL option going down\n");
+          PRINTF("RPL: Option going down\n");
         }
       }
     }

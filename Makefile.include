@@ -1,8 +1,8 @@
-# -*- makefile -*-
-
 ifndef CONTIKI
   ${error CONTIKI not defined! You must specify where Contiki resides}
 endif
+
+include $(CONTIKI)/Makefile.identify-target
 
 ifeq ($(TARGET),)
   -include Makefile.target
@@ -74,7 +74,7 @@ endif
 
 ifeq ($(CONTIKI_WITH_RIME),1)
   HAS_STACK = 1
-  CFLAGS += -DNETSTACK_CONF_WITH_RIME=1 
+  CFLAGS += -DNETSTACK_CONF_WITH_RIME=1
   MODULES += core/net/rime
 endif
 

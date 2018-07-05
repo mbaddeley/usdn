@@ -9,7 +9,7 @@
 *.ihex
 *.pyc
 *.redbee-econotag
-*.econotag 
+*.econotag
 *.native
 *.z1
 *.minimal-net
@@ -129,3 +129,7 @@ LOG_OPENOCD
 # nRF52 build artifacts
 *.jlink
 *.nrf52dk
+
+# Editor files
+.tags
+*.tags1

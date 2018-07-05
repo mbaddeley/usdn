@@ -57,6 +57,9 @@ init(void)
 static void
 send(mac_callback_t sent, void *ptr)
 {
+#if UIP_CONF_IPV6_SDN
+  if(packetbuf_attr(PACKETBUF_ATTR_FRAME_TYPE) != FRAME802154_SDNFRAME)
+#endif
   packetbuf_set_attr(PACKETBUF_ATTR_FRAME_TYPE, FRAME802154_DATAFRAME);
   NETSTACK_MAC.send(sent, ptr);
 }

@@ -1,0 +1,27 @@
+print-%:
+	@echo '$*=$($*)'
+
+atom_src += atom.c \
+						atom-buffer.c \
+            atom-net.c \
+					  atom-sb-usdn.c \
+						atom-sb-rpl.c \
+					  atom-app-route-sp.c \
+					  atom-app-route-rpl.c \
+            atom-app-join-cfg.c
+
+# atom-app-net-agg.c
+
+# Old compile structure
+# ATOM_DIRS = apps nsal dal
+# Add application directories to contiki sourcefiles
+# APPDS += ${wildcard ${foreach DIR, $(ATOM_DIRS), \
+#          ${addprefix $(CONTIKI)/apps/atom/, $(DIR)}}}
+# Main Process
+# atom_src = atom.c
+# Device Abstraction Layer
+# atom_src += atom-fallback.c
+# Network Service Abstraction Layer
+# atom_src += atom-netstate.c
+# Applications
+# atom_src += ${foreach APP, ${ATOM_APPS}, $(APP).c}

@@ -38,7 +38,7 @@
 /**
  * \file
  *    Header file for ICMPv6 message and error handing (RFC 4443)
- * \author Julien Abeille <jabeille@cisco.com> 
+ * \author Julien Abeille <jabeille@cisco.com>
  * \author Mathilde Durvy <mdurvy@cisco.com>
  */
 
@@ -116,7 +116,7 @@ typedef struct uip_icmp6_error{
  * \param param 32 bit parameter of the error message, semantic depends on error
  */
 void
-uip_icmp6_error_output(uint8_t type, uint8_t code, uint32_t param); 
+uip_icmp6_error_output(uint8_t type, uint8_t code, uint32_t param);
 
 /**
  * \brief Send an icmpv6 message
@@ -239,4 +239,3 @@ void uip_icmp6_init(void);
 
 #endif /*ICMP6_H_*/
 /** @} */
-

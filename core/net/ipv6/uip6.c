@@ -89,13 +89,18 @@
 #include "net/ipv6/uip-ds6-nbr.h"
 #endif /* UIP_ND6_SEND_NS */
 
+#if UIP_CONF_IPV6_SDN
+#include "sdn.h"
+#include "sdn-cd.h"
+#endif /* UIP_CONF_IPV6_SDN */
+
 #include <string.h>
 
 /*---------------------------------------------------------------------------*/
 /* For Debug, logging, statistics                                            */
 /*---------------------------------------------------------------------------*/
 
-#define DEBUG DEBUG_NONE
+#define DEBUG 0
 #include "net/ip/uip-debug.h"
 
 #if UIP_LOGGING == 1
@@ -894,7 +899,7 @@ ext_hdr_options_process(void)
        * present) is processed.
        */
 #if UIP_CONF_IPV6_RPL
-      PRINTF("Processing RPL option\n");
+      PRINTF("uip6: Processing RPL option\n");
       if(!rpl_verify_hbh_header(uip_ext_opt_offset)) {
         PRINTF("RPL Option Error: Dropping Packet\n");
         return 1;
@@ -950,6 +955,7 @@ uip_process(uint8_t flag)
   uint8_t opt;
   register struct uip_conn *uip_connr = uip_conn;
 #endif /* UIP_TCP */
+
 #if UIP_UDP
   if(flag == UIP_UDP_SEND_CONN) {
     goto udp_send;
@@ -1143,7 +1149,7 @@ uip_process(uint8_t flag)
     goto drop;
   }
 
-  PRINTF("IPv6 packet received from ");
+  PRINTF("uip6: IPv6 packet received from ");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
   PRINTF(" to ");
   PRINT6ADDR(&UIP_IP_BUF->destipaddr);
@@ -1151,7 +1157,7 @@ uip_process(uint8_t flag)
 
   if(uip_is_addr_mcast(&UIP_IP_BUF->srcipaddr)){
     UIP_STAT(++uip_stat.ip.drop);
-    PRINTF("Dropping packet, src is mcast\n");
+    PRINTF("uip6: Dropping packet, src is mcast\n");
     goto drop;
   }
 
@@ -1161,6 +1167,7 @@ uip_process(uint8_t flag)
     uip_ds6_nbr_refresh_reachable_state(&UIP_IP_BUF->srcipaddr);
   }
 #endif /* UIP_ND6_SEND_NS */
+
 
 #if UIP_CONF_ROUTER
   /*
@@ -1177,21 +1184,49 @@ uip_process(uint8_t flag)
 #endif /* UIP_CONF_IPV6_CHECKS */
     switch(ext_hdr_options_process()) {
     case 0:
+      PRINTF("uip6: Continue after extension header processing\n");
       /* continue */
       uip_next_hdr = &UIP_EXT_BUF->next;
       uip_ext_len += (UIP_EXT_BUF->len << 3) + 8;
       break;
     case 1:
-      PRINTF("Dropping packet after extension header processing\n");
+      PRINTF("uip6: Dropping packet after extension header processing\n");
       /* silently discard */
       goto drop;
     case 2:
-      PRINTF("Sending error message after extension header processing\n");
+      PRINTF("uip6: Sending error message after extension header processing\n");
       /* send icmp error message (created in ext_hdr_options_process)
        * and discard*/
       goto send;
     }
   }
+
+#if UIP_CONF_IPV6_SDN
+  /* Explicitly don't check some messages */
+  PRINTF("uip6: Next header is %d\n", *uip_next_hdr);
+  if(*uip_next_hdr != UIP_PROTO_ROUTING &&
+      *uip_next_hdr != UIP_PROTO_ICMP6 &&
+      !uip_ds6_is_my_addr(&UIP_IP_BUF->destipaddr) &&
+      !uip_ipaddr_cmp(&UIP_IP_BUF->destipaddr, &DEFAULT_CONTROLLER->ipaddr) &&
+      !uip_ds6_is_my_maddr(&UIP_IP_BUF->destipaddr)) {
+    PRINTF("uip6: Checking SDN\n");
+    /* Process packets according to the SDN flowtable */
+    uint8_t result = SDN_DRIVER.process(SDN_UIP);
+    switch(result) {
+      case UIP_DROP:
+        PRINTF("uip6: dropped\n");
+        goto drop; /* Don't deliver up the stack. Clear the uip buf */
+      case UIP_ACCEPT:
+        PRINTF("uip6: continue\n");
+        break;     /* Continue processing as normal */
+      default:
+        PRINTF("uip6: Unknown return value!\n");
+        return;    /* Return to calling process and don't clear the buf */
+    }
+  } else {
+    PRINTF("uip6: Bypassing SDN\n");
+  }
+#endif /* UIP_CONF_IPV6_SDN */
 
   /*
    * Process Packets with a routable multicast destination:
@@ -1241,7 +1276,7 @@ uip_process(uint8_t flag)
       }
 
       UIP_IP_BUF->ttl = UIP_IP_BUF->ttl - 1;
-      PRINTF("Forwarding packet to ");
+      PRINTF("uip6: Forwarding packet to ");
       PRINT6ADDR(&UIP_IP_BUF->destipaddr);
       PRINTF("\n");
       UIP_STAT(++uip_stat.ip.forwarded);
@@ -1371,13 +1406,15 @@ uip_process(uint8_t flag)
            * to the routing type
            */
 
-          PRINTF("Processing Routing header\n");
+          PRINTF("uip6: Processing Routing header\n");
           if(UIP_ROUTING_BUF->seg_left > 0) {
 #if UIP_CONF_IPV6_RPL && RPL_WITH_NON_STORING
+            PRINTF("uip6: Processing RPL Routing header\n");
             if(rpl_process_srh_header()) {
+              UIP_IP_BUF->ttl = UIP_IP_BUF->ttl - 1;
               goto send; /* Proceed to forwarding */
             }
-#endif /* UIP_CONF_IPV6_RPL && RPL_WITH_NON_STORING */
+#endif /* UIP_CONF_IPV6_RPL */
             uip_icmp6_error_output(ICMP6_PARAM_PROB, ICMP6_PARAMPROB_HEADER, UIP_IPH_LEN + uip_ext_len + 2);
             UIP_STAT(++uip_stat.ip.drop);
             UIP_LOG("ip6: unrecognized routing type");
@@ -1389,7 +1426,7 @@ uip_process(uint8_t flag)
         case UIP_PROTO_FRAG:
           /* Fragmentation header:call the reassembly function, then leave */
 #if UIP_CONF_IPV6_REASSEMBLY
-          PRINTF("Processing frag header\n");
+          PRINTF("uip6: Processing frag header\n");
           uip_len = uip_reass();
           if(uip_len == 0) {
             goto drop;
@@ -1400,7 +1437,7 @@ uip_process(uint8_t flag)
           }
           /*packet is reassembled, reset the next hdr to the beginning
            of the IP header and restart the parsing of the reassembled pkt*/
-          PRINTF("Processing reassembled packet\n");
+          PRINTF("uip6: Processing reassembled packet\n");
           uip_ext_len = 0;
           uip_ext_bitmap = 0;
           uip_next_hdr = &UIP_IP_BUF->proto;
@@ -1513,10 +1550,20 @@ uip_process(uint8_t flag)
     goto drop;
   }
 
+  /* Debug the connection */
+  // PRINTF("uip6: incomming srcport/destport %d/%d\n",
+  //        UIP_HTONS(UIP_UDP_BUF->srcport),
+  //        UIP_HTONS(UIP_UDP_BUF->destport));
+
   /* Demultiplex this UDP packet between the UDP "connections". */
   for(uip_udp_conn = &uip_udp_conns[0];
       uip_udp_conn < &uip_udp_conns[UIP_UDP_CONNS];
       ++uip_udp_conn) {
+        // PRINTF("From ");
+        // PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
+        // PRINTF(" (%d/%d) to ", UIP_HTONS(UIP_UDP_BUF->srcport), UIP_HTONS(uip_udp_conn->rport));
+        // PRINT6ADDR(&UIP_IP_BUF->destipaddr);
+        // PRINTF(" (%d/%d)\n", UIP_HTONS(UIP_UDP_BUF->destport), UIP_HTONS(uip_udp_conn->lport));
     /* If the local UDP port is non-zero, the connection is considered
        to be used. If so, the local port number is checked against the
        destination port number in the received packet. If the two port
@@ -1524,6 +1571,8 @@ uip_process(uint8_t flag)
        connection is bound to a remote port. Finally, if the
        connection is bound to a remote IP address, the source IP
        address of the packet is checked. */
+    // PRINTF("uip6: conn rport/lport %d/%d\n", UIP_HTONS(uip_udp_conn->rport),
+    //                                          UIP_HTONS(uip_udp_conn->lport));
     if(uip_udp_conn->lport != 0 &&
        UIP_UDP_BUF->destport == uip_udp_conn->lport &&
        (uip_udp_conn->rport == 0 ||
@@ -2316,6 +2365,7 @@ uip_process(uint8_t flag)
   return;
 
   drop:
+  PRINTF("Dropping packet in uip\n");
   uip_clear_buf();
   uip_ext_bitmap = 0;
   uip_flags = 0;

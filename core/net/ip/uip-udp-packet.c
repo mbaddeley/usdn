@@ -44,6 +44,14 @@ extern uint16_t uip_slen;
 #include "net/ip/uip-udp-packet.h"
 #include "net/ipv6/multicast/uip-mcast6.h"
 
+#if UIP_CONF_IPV6_SDN
+#include "sdn.h"
+#include "sdn-cd.h"
+#endif /* UIP_CONF_IPV6_SDN */
+
+#include <stdio.h>
+
+
 #include <string.h>
 
 /*---------------------------------------------------------------------------*/
@@ -55,7 +63,27 @@ uip_udp_packet_send(struct uip_udp_conn *c, const void *data, int len)
     uip_udp_conn = c;
     uip_slen = len;
     memmove(&uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN], data, len);
+
     uip_process(UIP_UDP_SEND_CONN);
+
+#if UIP_CONF_IPV6_SDN
+  /* uip_process set up the udp packet for us, and bypassed the sdn.process()
+     in uip6 */
+  if(!uip_ipaddr_cmp(&uip_udp_conn->ripaddr, &DEFAULT_CONTROLLER->ipaddr)) {
+    // printf("uip-udp: Checking SDN\n");
+    uint8_t result = SDN_DRIVER.process(SDN_UDP);
+    switch(result) {
+      case UIP_DROP:
+        // printf("uip-udp: dropped\n");
+        return; /* Don't deliver up the stack. */
+      case UIP_ACCEPT:
+        // printf("uip-udp: continue\n");
+        break;  /* Continue processing as normal */
+      default:
+        return;
+    }
+  }
+#endif /* UIP_CONF_IPV6_SDN */
 
 #if UIP_IPV6_MULTICAST
   /* Let the multicast engine process the datagram before we send it */

@@ -97,6 +97,10 @@
 #define FRAME802154_ACKFRAME        (0x02)
 #define FRAME802154_CMDFRAME        (0x03)
 
+#if UIP_CONF_IPV6_SDN
+  #define FRAME802154_SDNFRAME        (0x21)
+#endif
+
 #define FRAME802154_BEACONREQ       (0x07)
 
 #define FRAME802154_IEEERESERVED    (0x00)
@@ -207,8 +211,10 @@ typedef struct {
 /* Prototypes */
 
 int frame802154_hdrlen(frame802154_t *p);
+void frame802154_create_fcf(frame802154_fcf_t *fcf, uint8_t *buf);
 int frame802154_create(frame802154_t *p, uint8_t *buf);
 int frame802154_parse(uint8_t *data, int length, frame802154_t *pf);
+void frame802154_parse_fcf(uint8_t *data, frame802154_fcf_t *pfcf);
 
 /* Get current PAN ID */
 uint16_t frame802154_get_pan_id(void);

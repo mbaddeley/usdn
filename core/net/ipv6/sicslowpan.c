@@ -70,6 +70,12 @@
 #include "net/ipv6/sicslowpan.h"
 #include "net/netstack.h"
 
+#if UIP_CONF_IPV6_SDN
+#include "net/sdn/sdn.h"
+#include "net/sdn/sdn-cd.h"
+#include "net/sdn/usdn/usdn.h"
+#endif
+
 #include <stdio.h>
 
 #define DEBUG DEBUG_NONE
@@ -1226,6 +1232,13 @@ compress_hdr_ipv6(linkaddr_t *link_destaddr)
 static void
 packet_sent(void *ptr, int status, int transmissions)
 {
+#if UIP_CONF_IPV6_SDN && SDN_SICSLOWPAN_CALLBACK
+    /* Only callback for SDN packets */
+    if(packetbuf_attr(PACKETBUF_ATTR_FRAME_TYPE) == FRAME802154_SDNFRAME) {
+      /* Mesh Header = 21, 6LoWPAN = 20, RPL Extension = 8, UDP = 8 */
+      usdn_engine_mac_callback((uint8_t *)(packetbuf_ptr + NETSTACK_FRAMER.length() + packetbuf_hdr_len + RPL_HOP_BY_HOP_LEN + UIP_UDPH_LEN), status);
+    }
+#endif
   uip_ds6_link_neighbor_callback(status, transmissions);
 
   if(callback != NULL) {
@@ -1240,7 +1253,11 @@ packet_sent(void *ptr, int status, int transmissions)
  * \param dest the link layer destination address of the packet
  */
 static void
-send_packet(linkaddr_t *dest)
+#if UIP_CONF_IPV6_SDN
+  send_packet(linkaddr_t *dest, uint8_t type)
+#else
+  send_packet(linkaddr_t *dest)
+#endif
 {
   /* Set the link layer destination address for the packet as a
    * packetbuf attribute. The MAC layer can access the destination
@@ -1251,6 +1268,12 @@ send_packet(linkaddr_t *dest)
 #if NETSTACK_CONF_BRIDGE_MODE
   /* This needs to be explicitly set here for bridge mode to work */
   packetbuf_set_addr(PACKETBUF_ADDR_SENDER,(void*)&uip_lladdr);
+#endif
+
+#if UIP_CONF_IPV6_SDN
+  if(type == FRAME802154_SDNFRAME) {
+    packetbuf_set_attr(PACKETBUF_ATTR_FRAME_TYPE, FRAME802154_SDNFRAME);
+  }
 #endif
 
   /* Provide a callback function to receive the result of
@@ -1276,6 +1299,9 @@ output(const uip_lladdr_t *localdest)
 {
   int framer_hdrlen;
   int max_payload;
+#if UIP_CONF_IPV6_SDN
+  uint8_t packet_type;
+#endif
 
   /* The MAC address of the destination of the packet */
   linkaddr_t dest;
@@ -1308,6 +1334,17 @@ output(const uip_lladdr_t *localdest)
             (UIP_TCP_BUF->flags & TCP_FIN) == TCP_FIN) {
     packetbuf_set_attr(PACKETBUF_ATTR_PACKET_TYPE,
                        PACKETBUF_ATTR_PACKET_TYPE_STREAM_END);
+  }
+#endif
+
+#if UIP_CONF_IPV6_SDN
+  /* Check if this is destined for the controller */
+  if(DEFAULT_CONTROLLER != NULL &&
+     (uip_ipaddr_cmp(&UIP_IP_BUF->srcipaddr, &DEFAULT_CONTROLLER->ipaddr) ||
+      uip_ipaddr_cmp(&UIP_IP_BUF->destipaddr, &DEFAULT_CONTROLLER->ipaddr))){
+    packet_type = FRAME802154_SDNFRAME;
+  } else {
+    packet_type = FRAME802154_DATAFRAME;
   }
 #endif
 
@@ -1352,6 +1389,9 @@ output(const uip_lladdr_t *localdest)
 #endif /* USE_FRAMER_HDRLEN */
 
   max_payload = MAC_MAX_PAYLOAD - framer_hdrlen;
+  PRINTFO("sicslowpan output: (uip_len: %d - uncomp_hdr: %d) (%d) > (%d) (maxpld: %d  - packetbuf_hdr_len: %d)\n",
+          uip_len, uncomp_hdr_len, (uip_len-uncomp_hdr_len), (max_payload-packetbuf_hdr_len), max_payload, packetbuf_hdr_len);
+
   if((int)uip_len - (int)uncomp_hdr_len > max_payload - (int)packetbuf_hdr_len) {
 #if SICSLOWPAN_CONF_FRAG
     /* Number of bytes processed. */
@@ -1409,7 +1449,11 @@ output(const uip_lladdr_t *localdest)
       PRINTFO("could not allocate queuebuf for first fragment, dropping packet\n");
       return 0;
     }
+#if UIP_CONF_IPV6_SDN
+    send_packet(&dest, packet_type);
+#else
     send_packet(&dest);
+#endif
     queuebuf_to_packetbuf(q);
     queuebuf_free(q);
     q = NULL;
@@ -1455,7 +1499,11 @@ output(const uip_lladdr_t *localdest)
         PRINTFO("could not allocate queuebuf, dropping fragment\n");
         return 0;
       }
+#if UIP_CONF_IPV6_SDN
+      send_packet(&dest, packet_type);
+#else
       send_packet(&dest);
+#endif
       queuebuf_to_packetbuf(q);
       queuebuf_free(q);
       q = NULL;
@@ -1482,7 +1530,11 @@ output(const uip_lladdr_t *localdest)
     memcpy(packetbuf_ptr + packetbuf_hdr_len, (uint8_t *)UIP_IP_BUF + uncomp_hdr_len,
            uip_len - uncomp_hdr_len);
     packetbuf_set_datalen(uip_len - uncomp_hdr_len + packetbuf_hdr_len);
+#if UIP_CONF_IPV6_SDN
+    send_packet(&dest, packet_type);
+#else
     send_packet(&dest);
+#endif
   }
   return 1;
 }
@@ -1803,4 +1855,3 @@ const struct network_driver sicslowpan_driver = {
 };
 /*--------------------------------------------------------------------*/
 /** @} */
-
