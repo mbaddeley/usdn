@@ -20,7 +20,7 @@ To get you going you can find some Cooja examples in:
 
  */examples/sdn/..*
 
-Because of the size of the stack, if you're testing in Cooja you'll need to compile for exp5438 motes. This is also the reason why μSDN hasn't yet been fully ported to Contiki-NG, as NG currently doesn't support that platform (although there are plans to do this soon).
+Because of the size of the stack, if you're testing in Cooja you'll need to compile for exp5438 motes. This is also the reason why μSDN hasn't yet been fully ported to Contiki-NG, as NG currently doesn't support that platform (although there are plans to do this soon). Please note that you'll need to run make in *both* sdn/controller and sdn/node as I haven't set it up todo both in the higer level directory.
 
 *make TARGET=exp5438*
 
