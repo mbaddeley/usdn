@@ -231,7 +231,7 @@ mflow_new_sendinterval(mflow_t *a, uint8_t delay)
     LOG_DBG("app:%d new interval:%d.%02lu(s)\n", a->id,
             (int)(interval/CLOCK_SECOND),
             (int)(100L * interval/CLOCK_SECOND) - \
-            ((int)(interval)/CLOCK_SECOND *100));
+            ((unsigned long)(interval)/CLOCK_SECOND *100));
     ctimer_set(&a->sendtimer, interval, sendtimer_expired, a);
     a->state = mflow_STATE_SENDING;
   /* constant br AND already sending */

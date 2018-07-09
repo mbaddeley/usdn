@@ -35,8 +35,8 @@
  * \author
  *         Michael Baddeley <m.baddeley@bristol.ac.uk>
  */
-#ifndef SDN_H_
-#define SDN_H_
+#ifndef SDN_STATS_H_
+#define SDN_STATS_H_
 
 /*---------------------------------------------------------------------------*/
 /* Statistics and info printing for results */
@@ -45,4 +45,4 @@ void sdn_stats_start(clock_time_t period);
 void sdn_stats_stop(void);
 void sdn_stats_print(char *str);
 
-#endif /* SDN_H_ */
+#endif /* SDN_STATS_H_ */
