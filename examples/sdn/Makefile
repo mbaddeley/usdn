@@ -14,7 +14,7 @@ CFLAGS += -ffunction-sections
 LDFLAGS += -Wl,--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__
 
 # Reduce the size as much as possible
-CFLAGS += -DUIP_CONF_TCP=0
+# CFLAGS += -DUIP_CONF_TCP=0
 
 # Linker Optimization
 SMALL=1
