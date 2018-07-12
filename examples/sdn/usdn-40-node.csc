@@ -7,8 +7,8 @@
   <project EXPORT="discard">[APPS_DIR]/collect-view</project>
   <project EXPORT="discard">[APPS_DIR]/powertracker</project>
   <simulation>
-    <title>My simulation</title>
-    <randomseed>123456</randomseed>
+    <title>usdn-40-node</title>
+    <randomseed>generated</randomseed>
     <motedelay_us>1000000</motedelay_us>
     <radiomedium>
       org.contikios.cooja.radiomediums.UDGM
@@ -817,7 +817,7 @@
       <viewport>0.8103813689572628 0.0 0.0 0.8103813689572628 253.61290254585464 229.03686120967856</viewport>
     </plugin_config>
     <width>398</width>
-    <z>0</z>
+    <z>2</z>
     <height>395</height>
     <location_x>1</location_x>
     <location_y>1</location_y>
@@ -830,7 +830,7 @@
       <coloring />
     </plugin_config>
     <width>956</width>
-    <z>4</z>
+    <z>5</z>
     <height>440</height>
     <location_x>2</location_x>
     <location_y>394</location_y>
@@ -885,7 +885,7 @@
       <zoomfactor>100000.0</zoomfactor>
     </plugin_config>
     <width>1917</width>
-    <z>5</z>
+    <z>6</z>
     <height>166</height>
     <location_x>0</location_x>
     <location_y>836</location_y>
@@ -898,7 +898,7 @@
       <coloring />
     </plugin_config>
     <width>957</width>
-    <z>3</z>
+    <z>4</z>
     <height>439</height>
     <location_x>953</location_x>
     <location_y>399</location_y>
@@ -907,10 +907,10 @@
     org.contikios.cooja.plugins.ScriptRunner
     <plugin_config>
       <scriptfile>[CONTIKI_DIR]/examples/sdn/scripts/js/write-all.js</scriptfile>
-      <active>false</active>
+      <active>true</active>
     </plugin_config>
     <width>557</width>
-    <z>6</z>
+    <z>0</z>
     <height>392</height>
     <location_x>1317</location_x>
     <location_y>2</location_y>
@@ -923,7 +923,7 @@
       <coloring />
     </plugin_config>
     <width>824</width>
-    <z>2</z>
+    <z>3</z>
     <height>400</height>
     <location_x>677</location_x>
     <location_y>0</location_y>
