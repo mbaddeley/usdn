@@ -3,7 +3,7 @@
 /* 3600000 ms -> 1h */
 TIMEOUT(3600000); /* milliseconds. print last msg at timeout */
 
-var file = "/home/mike/Results/COOJA_results.log"
+var file = "/home/mike/Results/" + mote.getSimulation().getTitle() + ".log";
 
 // Write over old file
 log.writeFile(file, "")
