@@ -98,7 +98,7 @@ endif # MULTIFLOW
 ################ START of SDN Configuration
 
 # Check for SDN setting in cmd line vars
-SDN ?= 0
+SDN ?= 1
 ifeq ($(SDN), 1)
     CFLAGS += -DUIP_CONF_IPV6_SDN=1
     MODULES += core/net/sdn core/net/sdn/usdn

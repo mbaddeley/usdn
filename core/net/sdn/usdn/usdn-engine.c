@@ -277,8 +277,8 @@ cfg_input(void *data) {
   DEFAULT_CONTROLLER->update_period = cfg->update_period;
 
   /* Update RPL */
-  rpl_sdn_set_instance_properties(cfg->rpl_dio_interval,
-                                  cfg->rpl_dfrt_lifetime);
+  // rpl_sdn_set_instance_properties(cfg->rpl_dio_interval,
+  //                                 cfg->rpl_dfrt_lifetime);
 
   if(DEFAULT_CONTROLLER->state == CTRL_CONNECTING) {
     /* Setup a new controller connection */
