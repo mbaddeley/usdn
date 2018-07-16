@@ -244,6 +244,7 @@ CCIF extern uip_buf_t   c_alligned_buf;
 CCIF extern uint16_t    c_len;
 CCIF extern uint8_t     c_ext_len;
 CCIF extern uint16_t    c_slen;
+CCIF extern uint8_t    c_hops;
 
 /* This function clears the controller buffer by reseting the c_len pointer. */
 #define c_clear_buf() { \
@@ -258,6 +259,7 @@ typedef struct atom_message {
   uint8_t         buf[UIP_BUFSIZE - UIP_LLH_LEN];
   uint16_t        buf_len;
   uint8_t         ext_len;
+  uint8_t         hops;
   struct atom_sb  *sb;
 } atom_msg_t;
 

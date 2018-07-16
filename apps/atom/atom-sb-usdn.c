@@ -280,11 +280,12 @@ in(void) {
 
   /* Print out some stats */
   usdn_hdr_t *hdr = C_USDN_HDR;
-  LOG_STAT("IN %s s:%d d:%d id:%d\n",
+  LOG_STAT("IN %s s:%d d:%d id:%d h:%u\n",
           USDN_CODE_STRING(hdr->typ),
           C_IP_BUF->srcipaddr.u8[15],
           C_IP_BUF->destipaddr.u8[15],
-          hdr->flow);
+          hdr->flow,
+          c_hops);
 
   // TODO: net id
   // TODO: flow id

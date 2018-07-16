@@ -60,6 +60,7 @@ static atom_queue_t queue;
 #define C_BUF            ((uint8_t *)&c_buf[UIP_LLH_LEN])
 /* UIP buffer pointers */
 #define UIP_BUF          ((uint8_t *)&uip_buf[UIP_LLH_LEN])
+#define UIP_IP_BUF       ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
 
 /* Our own input buffer. Firstly so we don't mess up uip. Secondly to solve
    word alignment issues when we use the sdn_packetbuf (which doesn't store
@@ -68,6 +69,7 @@ uip_buf_t c_alligned_buf;
 uint16_t  c_len;
 uint8_t   c_ext_len;
 uint16_t  c_slen;
+uint8_t   c_hops;
 
 /* Action buffer */
 static atom_action_t action_buf;
@@ -116,6 +118,7 @@ atom_buffer_add(struct atom_sb *sb_connector)
     m->buf_len = uip_len;
     m->ext_len = uip_ext_len;
     m->sb = sb_connector;
+    m->hops = uip_ds6_if.cur_hop_limit - UIP_IP_BUF->ttl + 1;
     /* Add the message to the underlying list */
     LOG_DBG("Copy uip_buf (len=%d , ext=%d) to queue (id=%d)\n",
              uip_len, uip_ext_len, m->id);
@@ -139,6 +142,7 @@ atom_buffer_head(void)
     c_len = m->buf_len;
     c_ext_len = m->ext_len;
     memcpy(C_BUF, m->buf, m->buf_len);
+    c_hops = m->hops;
   } else {
     LOG_ERR("List empty (%d/%d)\n", list_length(queue.list), queue.size);
   }
