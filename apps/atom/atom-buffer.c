@@ -118,7 +118,7 @@ atom_buffer_add(struct atom_sb *sb_connector)
     m->buf_len = uip_len;
     m->ext_len = uip_ext_len;
     m->sb = sb_connector;
-    m->hops = uip_ds6_if.cur_hop_limit - UIP_IP_BUF->ttl + 1;
+    m->hops = uip_ds6_if.cur_hop_limit - UIP_IP_BUF->ttl;
     /* Add the message to the underlying list */
     LOG_DBG("Copy uip_buf (len=%d , ext=%d) to queue (id=%d)\n",
              uip_len, uip_ext_len, m->id);
