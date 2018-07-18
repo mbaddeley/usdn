@@ -45,7 +45,7 @@
 
 /* Options already in makefile */
 #ifndef SDN_CONF_FT_LIFETIME
-#define SDN_CONF_FT_LIFETIME                0xFFFF  /* seconds. 0xFFFF = inf */
+#define SDN_CONF_FT_LIFETIME                300  /* seconds. 0xFFFF = inf */
 #endif
 #ifndef SDN_CONF_CONTROLLER_UPDATE_PERIOD
 #define SDN_CONF_CONTROLLER_UPDATE_PERIOD   60      /* seconds */
