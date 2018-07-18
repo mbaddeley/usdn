@@ -18,11 +18,17 @@ Getting Started
 
 To get you going you can find some Cooja examples in:
 
- */examples/sdn/..*
+ **/examples/sdn/..**
 
-Because of the size of the stack, if you're testing in Cooja you'll need to compile for exp5438 motes. This is also the reason why μSDN hasn't yet been fully ported to Contiki-NG, as NG currently doesn't support that platform (although there are plans to do this soon). Please note that you'll need to run make in *both* sdn/controller and sdn/node as I haven't set it up todo both in the higer level directory.
+Because of the size of the stack, if you're testing in Cooja you'll need to compile for exp5438 motes (*there is a Makefile.target which should handle this for you*). This is also the reason why μSDN hasn't yet been fully ported to Contiki-NG, as NG currently doesn't support that platform (although there are plans to do this soon). Please note that you'll need to run make in *both* sdn/controller and sdn/node as I haven't set it up todo both in the higer level directory.
 
-*make TARGET=exp5438*
+```
+  cd controller/
+  make clean & make
+  cd ..
+  cd node/
+  make clean & make
+```
 
 **IMPORTANT** You'll also need to install the 20-bit mspgcc compiler.
 
@@ -34,10 +40,8 @@ Further Development
 ---
 Unfortunately I've moved on from working on μSDN, but if you wish to add to it/fix anything then feel free to create a pull request. That being said, I will try to improve the documentation and examples over the next few months (to the end of 2018).
 
+Where is everything?
 ---
-[usdn_v1.0] - 28/06/18
----
-### Where is everything?
 - Core: */core/net/sdn/*
 - Stack: */core/net/sdn/usdn/*
 - Atom: */apps/atom/*
@@ -131,6 +135,22 @@ Unfortunately I've moved on from working on μSDN, but if you wish to add to it/
 
 ### Still to be Implemented...
 - Perform multiple flowtable entries on packets
+- Port to Contiki-NG (waiting for exp5438 motes to be supported)
 
 ### Known Issues
 - Lots ;) Just ask if you have problems and I'll try to help as best I can.
+
+---
+[usdn_v1.1] - 17/07/18
+---
+- Turned on default FT lifetimes.
+- Fixed issue where SDN was turned off in the Makefile (oops!).
+- Added hopcount to Atom ingress messages.
+- Added the NetSoft 2018 paper and slides.
+- Added Makefile.target so you don't need to type in target each time.
+- Fixes for automatic simulation through ContikiPy.
+
+---
+[usdn_v1.0] - 28/06/18
+---
+- Initial commit.
