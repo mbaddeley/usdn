@@ -7,7 +7,7 @@ This repo hosts the source code of μSDN, which we published in the NetSoft 2018
 
 About
 ---
-μSDN is has been developed to provide an open source platform to deliver SDN on 6LoWPAN IEEE 802.15.4-2012 networks. The version here is currently not compatible with TSCH, though we have previously tried it out with our own 6TiSCH implementation for contiki (check out the NFV-SDN 2017 paper [here](https://ieeexplore.ieee.org/document/8169876/)).
+μSDN is has been developed to provide an open source platform to deliver SDN on 6LoWPAN IEEE 802.15.4-2012 networks. The version here is currently not compatible with TSCH, though we have previously tried it out with our own 6TiSCH implementation for contiki (check out the NFV-SDN 2017 paper [here](https://www.researchgate.net/publication/321733914_Isolating_SDN_control_traffic_with_layer-2_slicing_in_6TiSCH_industrial_IoT_networks)).
 
 Alongside μSDN itself, we provide an embedded SDN controller, *Atom*, as well as a flow generator for testing purposes, *Multiflow*.
 
