@@ -3,7 +3,7 @@
 
 Intro
 ---
-This repo hosts the source code of μSDN, which we published in the NetSoft 2018 conference ([paper](evolving-sdn-for-low-power-iot-networks.pdf),  [slides](netsoft20181.pdf)).
+This repo hosts the source code of μSDN, which we published in the NetSoft 2018 conference ([paper](evolving-sdn-for-low-power-iot-networks.pdf),  [slides](netsoft20181.pdf)). μSDN is also in the process of being ported to Contiki-NG (which will supersede this version), you can check out the μSDN-NG repo progess [here](https://github.com/mbaddeley/usdn-ng).
 
 About
 ---
