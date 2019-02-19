@@ -16,28 +16,53 @@ Please note, this is an academic exercise and a fairly large codebase, so there 
 Getting Started
 ---
 
-To get you going you can find some Cooja examples in:
-
- */examples/sdn/..*
-
-Because of the size of the stack, if you're testing in Cooja you'll need to compile for exp5438 motes. This is also the reason why μSDN hasn't yet been fully ported to Contiki-NG, as NG currently doesn't support that platform (although there are plans to do this soon). Please note that you'll need to run make in *both* sdn/controller and sdn/node as I haven't set it up todo both in the higer level directory.
-
-*make TARGET=exp5438*
-
 **IMPORTANT** You'll also need to install the 20-bit mspgcc compiler.
 
 For instructions on how to compile this please click [here](https://github.com/contiki-os/contiki/wiki/MSP430X)
 
 For a pre-compiled version for Ubuntu-64 please click [here](https://github.com/pksec/msp430-gcc-4.7.3)
 
+Some people have had issues trying to install this compiler, so if you're new to Contiki or Linux in general then I'd recommend doing the following:
+
+- Use a clean Ubuntu64 installation, don't use Instant Contiki. Contiki is included as part of uSDN and it's not necessary to have a separate Contiki repo.
+- Use the precompiled msp430-gcc version above. You literally just need to extract it to a folder of your choice and then add it to your path `export PATH=$PATH:<uri-to-your-mspgcc>`. Once you have done this your path should look something like this:
+
+```
+echo $PATH
+/home/mike/Compilers/mspgcc-.7.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+```
+
+- NB There is only *ONE* msp430-gcc compiler in the path. If there are two you need to remove the old one.
+- Check the mspgcc version (`msp430-gcc --version`) it should be 4.7.3.
+
+```
+msp430-gcc (GCC) 4.7.3 20130411 (mspgcc dev 20120911)
+Copyright (C) 2012 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions. There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+```
+You are now ready move on to the next stage! If you haven't properly set it up to use the 20-bit mspgcc then it will not compile!!!
+
+Because of the size of the stack, if you're testing in Cooja you'll need to compile for exp5438 motes (*there is a Makefile.target which should handle this for you*). Please note that you'll need to run make in *both* sdn/controller and sdn/node as I haven't set it up to do both in the higher level directory.
+
+```
+  cd usdn/examples/sdn/controller/
+  make clean & make
+  cd ..
+  cd node/
+  make clean & make
+```
+
+To get you going you can find some Cooja examples in:
+
+ **usdn/examples/sdn/..**
+
 Further Development
 ---
 Unfortunately I've moved on from working on μSDN, but if you wish to add to it/fix anything then feel free to create a pull request. That being said, I will try to improve the documentation and examples over the next few months (to the end of 2018).
 
+Where is everything?
 ---
-[usdn_v1.0] - 28/06/18
----
-### Where is everything?
 - Core: */core/net/sdn/*
 - Stack: */core/net/sdn/usdn/*
 - Atom: */apps/atom/*
@@ -131,6 +156,22 @@ Unfortunately I've moved on from working on μSDN, but if you wish to add to it/
 
 ### Still to be Implemented...
 - Perform multiple flowtable entries on packets
+- Port to Contiki-NG (waiting for exp5438 motes to be supported)
 
 ### Known Issues
 - Lots ;) Just ask if you have problems and I'll try to help as best I can.
+
+---
+[usdn_v1.1] - 17/07/18
+---
+- Turned on default FT lifetimes.
+- Fixed issue where SDN was turned off in the Makefile (oops!).
+- Added hopcount to Atom ingress messages.
+- Added the NetSoft 2018 paper and slides.
+- Added Makefile.target so you don't need to type in target each time.
+- Fixes for automatic simulation through ContikiPy.
+
+---
+[usdn_v1.0] - 28/06/18
+---
+- Initial commit.
