@@ -19,6 +19,9 @@ To get you going you can find some Cooja examples in:
 ### Further Development
 Unfortunately I've moved on from working on μSDN, but if you wish to add to it/fix anything then feel free to create a pull request.
 
+[usdn_v1.1] - 15/03/19
+### Minor Bug Fixes
+
 [usdn_v1.0] - 28/06/18
 ----------------
 ### Where is everything?
