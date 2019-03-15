@@ -100,7 +100,7 @@
 /* For Debug, logging, statistics                                            */
 /*---------------------------------------------------------------------------*/
 
-#define DEBUG 0
+#define DEBUG 1
 #include "net/ip/uip-debug.h"
 
 #if UIP_LOGGING == 1
@@ -1204,7 +1204,7 @@ uip_process(uint8_t flag)
 #if UIP_CONF_IPV6_SDN
   /* Explicitly don't check some messages */
   PRINTF("uip6: Next header is %d\n", *uip_next_hdr);
-  if(*uip_next_hdr != UIP_PROTO_ROUTING &&
+  if( *uip_next_hdr != UIP_PROTO_ROUTING &&
       *uip_next_hdr != UIP_PROTO_ICMP6 &&
       !uip_ds6_is_my_addr(&UIP_IP_BUF->destipaddr) &&
       !uip_ipaddr_cmp(&UIP_IP_BUF->destipaddr, &DEFAULT_CONTROLLER->ipaddr) &&

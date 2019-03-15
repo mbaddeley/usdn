@@ -60,7 +60,7 @@
 /* Log configuration */
 #include "sys/log-ng.h"
 #define LOG_MODULE "SDN-D"
-#define LOG_LEVEL LOG_LEVEL_SDN
+#define LOG_LEVEL LOG_LEVEL_DBG
 
 /* Buffer packets while wating for controller instructions */
 MEMB(sdn_pbuf_memb, sdn_bufpkt_t, SDN_PACKET_BUF_LEN);
