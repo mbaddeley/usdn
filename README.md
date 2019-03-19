@@ -186,7 +186,7 @@ Where is everything?
 - Lots ;) Just ask if you have problems and I'll try to help as best I can.
 
 ---
-[usdn_v1.1] - 19/03/19
+[usdn_v1.2] - 19/03/19
 ---
 - Added compilation script so you can compile in one command: `./compile.sh ADD_MAKEFILE_ARGS_HERE*`
 - Added a redirect example: *usdn-redirect.csc*
