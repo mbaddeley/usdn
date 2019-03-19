@@ -7,7 +7,7 @@ This repo hosts the source code of μSDN, which we published in the NetSoft 2018
 
 Publications
 ---
-[M. Baddeley, R. Nejabati, G. Oikonomou, M. Sooriyabandara, and D. Simeonidou, “Evolving SDN  for Low-Power IoT Networks,” in 2018 IEEE Conference on Network Softwarization (NetSoft), June 2018.](https://arxiv.org/pdf/1809.07296.pdf)
+[M. Baddeley, R. Nejabati, G. Oikonomou, M. Sooriyabandara, and D. Simeonidou, “Evolving SDN  for Low-Power IoT Networks,” in 2018 IEEE Conference on Network Softwarization (NetSoft), June 2018.](evolving-sdn-for-low-power-iot-networks.pdf)
 
 [M. Baddeley, R. Nejabati, G. Oikonomou, S. Gormus, M. Sooriyabandara and D. Simeonidou, "Isolating SDN control traffic with layer-2 slicing in 6TiSCH industrial IoT networks," 2017 IEEE Conference on Network Function Virtualization and Software Defined Networks (NFV-SDN), Berlin, 2017, pp. 247-251.](https://arxiv.org/pdf/1809.06624.pdf)
 
