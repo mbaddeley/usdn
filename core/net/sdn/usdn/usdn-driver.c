@@ -60,7 +60,7 @@
 /* Log configuration */
 #include "sys/log-ng.h"
 #define LOG_MODULE "SDN-D"
-#define LOG_LEVEL LOG_LEVEL_DBG
+#define LOG_LEVEL LOG_LEVEL_SDN
 
 /* Buffer packets while wating for controller instructions */
 MEMB(sdn_pbuf_memb, sdn_bufpkt_t, SDN_PACKET_BUF_LEN);
@@ -153,10 +153,15 @@ usdn_add_fwd_on_flow(flowtable_id_t id, uint8_t flow, uip_ipaddr_t *nexthop) {
 
 /*---------------------------------------------------------------------------*/
 void
-usdn_add_srh_on_dest(uip_ipaddr_t *dest, sdn_srh_route_t *route) {
+usdn_add_srh_on_dest(flowtable_id_t id, uip_ipaddr_t *dest, sdn_node_id_t *path, uint8_t len) {
+  /* Populate the route struct */
+  sdn_srh_route_t route;
+  route.cmpr = 15;
+  route.length = len;
+  memcpy(&route.nodes, path, len);
   /* Work out the length of the route data */
-  uint8_t length = sizeof(route->cmpr) + sizeof(route->length) +
-                   (route->length * sizeof(sdn_node_id_t));
+  uint8_t length = sizeof(route.cmpr) + sizeof(route.length) +
+                   (route.length * sizeof(sdn_node_id_t));
   sdn_ft_match_rule_t *m = sdn_ft_create_match(EQ,
                                                uip_dst_index,
                                                sizeof(uip_ipaddr_t),
@@ -165,10 +170,10 @@ usdn_add_srh_on_dest(uip_ipaddr_t *dest, sdn_srh_route_t *route) {
   sdn_ft_action_rule_t *a = sdn_ft_create_action(SDN_FT_ACTION_SRH,
                                                  0,
                                                  length,
-                                                 route);
+                                                 &route);
 
   LOG_DBG("Adding SRH on DEST entry to FLOWTABLE\n");
-  sdn_ft_create_entry(FLOWTABLE, m, a, SDN_CONF.ft_lifetime, 0);
+  sdn_ft_create_entry(id, m, a, SDN_CONF.ft_lifetime, 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -527,6 +532,8 @@ process(uint8_t flag) {
 
   /* Check why we are looking at the flowtables */
   switch(flag) {
+    case RPL_SRH:
+      goto srh;
     case SDN_UIP:
       goto uip;
     case SDN_UDP:
@@ -534,6 +541,16 @@ process(uint8_t flag) {
     default:
       LOG_ERR("Unknown flag, return UIP_DROP\n");
       return UIP_DROP;
+  }
+
+srh:
+  LOG_DBG("Checking srh...\n");
+  result = sdn_ft_check(WHITELIST, &uip_buf, uip_len, uip_ext_len);
+  if(result == SDN_NO_MATCH) {
+    LOG_DBG("No match! Return to upper layers (ACCEPT).\n");
+    return UIP_ACCEPT;
+  } else {
+    LOG_DBG("Match! Do something...\n");
   }
 
 uip:

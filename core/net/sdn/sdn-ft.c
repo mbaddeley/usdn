@@ -59,8 +59,8 @@
 #define LOG_MODULE "SDN-FT"
 #define LOG_LEVEL LOG_LEVEL_SDN
 
-#undef LOG_WITH_ANNOTATE
-#define LOG_WITH_ANNOTATE 0
+// #undef LOG_WITH_ANNOTATE
+// #define LOG_WITH_ANNOTATE 0
 
 #define ID_MAX   255
 static int current_id = 0;
@@ -626,7 +626,7 @@ void
 print_sdn_ft_match(sdn_ft_match_rule_t *m)
 {
   int i;
-  printf("FLOWTBLE:     M = OP:");
+  printf("M = OP:");
   if (m != NULL) {
     switch(m->operator){
       case EQ: printf("EQ "); break;
@@ -654,7 +654,7 @@ void
 print_sdn_ft_action(sdn_ft_action_rule_t *a)
 {
   int i;
-  printf("FLOWTBLE:     A = ");
+  printf("A = ");
   if(a != NULL) {
     switch(a->action){
       case SDN_FT_ACTION_ACCEPT: printf("ACCEPT "); break;
@@ -682,13 +682,13 @@ print_sdn_ft_action(sdn_ft_action_rule_t *a)
 void
 print_sdn_ft_entry(sdn_ft_entry_t *e)
 {
-#if LOG_LEVEL >= LOG_LEVEL_DBG
-  LOG_DBG("FLOWTBLE: ENTRY: (%p) id:%d ttl: %ld...\n", e, e->id, timer_remaining(&e->lifetimer.etimer.timer));
+// #if LOG_LEVEL == LOG_LEVEL_DBG
+  LOG_DBG("ENTRY: (%p) id:%d ttl: %ld...\n", e, e->id, timer_remaining(&e->lifetimer.etimer.timer));
   sdn_ft_match_rule_t *m = e->match_rule;
   sdn_ft_action_rule_t *a = e->action_rule;
   print_sdn_ft_match(m);
   print_sdn_ft_action(a);
-#endif
+// #endif
 }
 
 /*---------------------------------------------------------------------------*/

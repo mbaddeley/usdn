@@ -134,3 +134,11 @@ ifeq ($(POWER),1)
     CFLAGS += -DSDN_STATS_CONF_POWER=1
 endif
 endif
+
+# Logging levels
+ifneq ($(LOG_LEVEL_SDN),)
+    CFLAGS += -DLOG_CONF_LEVEL_SDN=$(LOG_LEVEL_SDN)
+endif
+ifneq ($(LOG_LEVEL_ATOM),)
+    CFLAGS += -DLOG_CONF_LEVEL_ATOM=$(LOG_LEVEL_ATOM)
+endif
