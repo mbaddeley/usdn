@@ -61,11 +61,8 @@ endif
 # Multiflow Application
 MULTIFLOW ?= 1
 ifeq ($(MULTIFLOW),1)
-    CFLAGS += -DBUILD_WITH_MULTIFLOW=1
-    APPS += multiflow
-endif
-
-ifneq ($(MULTIFLOW),1)
+CFLAGS += -DBUILD_WITH_MULTIFLOW=1
+APPS += multiflow
 # Number of client applications
 NUM_APPS ?= 1
 ifneq ($(NUM_APPS),)
@@ -131,9 +128,17 @@ ifeq ($(WITH_SDN_STATS),1)
     PROJECTDIRS += ../../../core/net/sdn
     PROJECT_SOURCEFILES += sdn-stats.c
     CFLAGS += -DWITH_SDN_STATS=1 -DSDN_STATS_PERIOD=60
-    POWER ?= 1
+    POWER ?= 0
 ifeq ($(POWER),1)
     CFLAGS += -DCONTIKIMAC_CONF_COMPOWER=1 -DWITH_COMPOWER=1
     CFLAGS += -DSDN_STATS_CONF_POWER=1
 endif
+endif
+
+# Logging levels
+ifneq ($(LOG_LEVEL_SDN),)
+    CFLAGS += -DLOG_CONF_LEVEL_SDN=$(LOG_LEVEL_SDN)
+endif
+ifneq ($(LOG_LEVEL_ATOM),)
+    CFLAGS += -DLOG_CONF_LEVEL_ATOM=$(LOG_LEVEL_ATOM)
 endif

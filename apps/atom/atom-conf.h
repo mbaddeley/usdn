@@ -91,7 +91,7 @@
 #ifdef ATOM_CONF_ROUTING_APPS_USDN
 #define ATOM_ROUTING_APPS_USDN ATOM_CONF_ROUTING_APPS_USDN
 #else
-#define ATOM_ROUTING_APPS_USDN { &app_route_rpl } //, &app_route_rpl }
+#define ATOM_ROUTING_APPS_USDN { &app_route_sp } //, &app_route_rpl }
 #endif
 
 /* Joining apps */

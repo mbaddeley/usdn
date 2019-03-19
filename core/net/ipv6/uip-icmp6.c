@@ -299,7 +299,7 @@ uip_icmp6_send(const uip_ipaddr_t *dest, int type, int code, int payload_len)
   UIP_STAT(++uip_stat.icmp.sent);
   UIP_STAT(++uip_stat.ip.sent);
 
-#ifdef WITH_SDN_STATS
+#if 0
   LOG_STAT("type:%d code:%d\n", type, code);
 #endif
 

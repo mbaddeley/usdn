@@ -16,8 +16,44 @@ To get you going you can find some Cooja examples in:
 
  */examples/sdn/..*
 
+There is a handy compile script in there that can be used to compile both the controller and node:
+
+```
+./compile.sh MULTIFLOW=1 NUM_APPS=1 FLOWIDS=1 TXNODES=8 RXNODES=10 DELAY=0 BRMIN=5 BRMAX=5 NSUFREQ=600 FTLIFETIME=300 FTREFRESH=1 FORCENSU=1 LOG_LEVEL_SDN=LOG_LEVEL_DBG LOG_LEVEL_ATOM=LOG_LEVEL_DBG
+```
+
+### uSDN Make Args:
+- NSUFREQ - Frequency of node state updates to the controller (seconds)
+- FTLIFETIME - Lifetime of flowtable entries (seconds)
+- FTREFRESH - Refresh flowtable entries on a match (0/1)
+- FORCENSU - Immediately send a NSU to the controller on join (0/1)
+- LOG_LEVEL_SDN - Set the uSDN log level (0 - 5)
+- LOG_LEVEL_ATOM - Set the Atom controller log level (0 - 5)
+
+### Multiflow Make Args:
+- MULTIFLOW - Turn on multiflow (0/1)
+- NUM_APPS - Number of flows (N)
+- FLOWIDS - Id for each flow ([0,1,2...])
+- TXNODES - Transmission nodes ([18,12...] 0 is ALL)
+- RXNODES - Receiving nodes ([1,2...])
+- DELAY   - Delay each transmission (seconds)
+- BRMIN   - Minimum bitrate (seconds)
+- BRMAX   - Maximum bitrate (seconds)
+
 ### Further Development
-Unfortunately I've moved on from working on μSDN, but if you wish to add to it/fix anything then feel free to create a pull request.
+Future μSDN development will merge with μSDN-NG, based on the newer (and maintained) Contiki-NG.
+
+[usdn_v1.1] - 15/03/19
+----------------
+### Compile script and redirect example
+- Added compilation script so you can compile in one command: `./compile.sh ADD_MAKEFILE_ARGS_HERE*`
+- Added a redirect example: *usdn-redirect.csc*
+
+### RPL Source Routing Headers
+- Modified *uip6.c* and *usdn-driver.c* so that RPL source routing packets are no longer automatically ignored by the SDN.
+
+### Bug Fixes
+- Changed Atom controller to use shortest path routing by default rather than RPL-NS routing!
 
 [usdn_v1.0] - 28/06/18
 ----------------

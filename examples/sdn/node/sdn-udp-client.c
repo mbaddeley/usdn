@@ -243,6 +243,12 @@ init(void)
 #if UIP_CONF_IPV6_SDN
   /* Configure SDN */
   SDN_DRIVER.add_accept_on_icmp6_type(WHITELIST, ICMP6_RPL); /* Accept RPL ICMP messages */
+  /* Redirect dest 10 to controller */
+  // if(node_id == 9) {
+  //   sdn_node_id_t route[] = {6, 3, 1};
+  //   uip_ip6addr(&ipaddr, UIP_DS6_DEFAULT_PREFIX, 0, 0, 0, 0x200, 0, 0, 9);
+  //   SDN_DRIVER.add_srh_on_dest(WHITELIST, &ipaddr, route, 3); /* Redirect dest 10 to controller */
+  // }
 #endif /* UIP_CONF_IPV6_SDN */
 
 #ifdef BUILD_WITH_MULTIFLOW
@@ -323,6 +329,7 @@ get_rf_channel(void)
 void
 print_sim_info(void)
 {
+  LOG_INFO("LOG_LEVEL_SDN: %u %u\n", LOG_CONF_LEVEL_SDN, LOG_LEVEL_SDN);
   LOG_INFO("Channel: %d, MAC: %s, RDC: %s\n", get_rf_channel(), NETSTACK_CONF_MAC.name, NETSTACK_CONF_RDC.name);
   LOG_INFO("SIMULATION SETTINGS ...\n");
 #ifdef BUILD_WITH_MULTIFLOW
@@ -339,7 +346,7 @@ print_sim_info(void)
 #endif /* (LOG_LEVEL >= LOG_LEVEL_INFO) */
 #endif /* BUILD_WITH_MULTIFLOW  */
 #if UIP_CONF_IPV6_SDN
-  LOG_INFO("NSU_FREQ=%d\n", DEFAULT_CONTROLLER->update_period);
+  LOG_INFO("NSU_FREQ=%d ", DEFAULT_CONTROLLER->update_period);
   LOG_INFO_("FT_LIFETIME=%d\n", (int)(SDN_CONF.ft_lifetime / CLOCK_SECOND));
 #endif
 
