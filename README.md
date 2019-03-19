@@ -5,6 +5,12 @@ Intro
 ---
 This repo hosts the source code of μSDN, which we published in the NetSoft 2018 conference ([paper](evolving-sdn-for-low-power-iot-networks.pdf),  [slides](netsoft20181.pdf)). μSDN is also in the process of being ported to Contiki-NG (which will supersede this version), you can check out the μSDN-NG repo progess [here](https://github.com/mbaddeley/usdn-ng).
 
+Publications
+---
+[M. Baddeley, R. Nejabati, G. Oikonomou, M. Sooriyabandara, and D. Simeonidou, “Evolving SDN  for Low-Power IoT Networks,” in 2018 IEEE Conference on Network Softwarization (NetSoft), June 2018.](https://arxiv.org/pdf/1809.07296.pdf)
+
+[M. Baddeley, R. Nejabati, G. Oikonomou, S. Gormus, M. Sooriyabandara and D. Simeonidou, "Isolating SDN control traffic with layer-2 slicing in 6TiSCH industrial IoT networks," 2017 IEEE Conference on Network Function Virtualization and Software Defined Networks (NFV-SDN), Berlin, 2017, pp. 247-251.](https://arxiv.org/pdf/1809.06624.pdf)
+
 About
 ---
 μSDN is has been developed to provide an open source platform to deliver SDN on 6LoWPAN IEEE 802.15.4-2012 networks. The version here is currently not compatible with TSCH, though we have previously tried it out with our own 6TiSCH implementation for contiki (check out the NFV-SDN 2017 paper [here](https://www.researchgate.net/publication/321733914_Isolating_SDN_control_traffic_with_layer-2_slicing_in_6TiSCH_industrial_IoT_networks)).
