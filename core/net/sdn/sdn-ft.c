@@ -367,7 +367,7 @@ sdn_ft_contains(void *data, uint8_t len)
     }
     e = e->next;
   }
-  LOG_WARN("No FT match\n");
+  LOG_DBG("No FT match\n");
   return 0;
 }
 
@@ -390,7 +390,7 @@ sdn_ft_check_list(list_t list, void *data, uint16_t len, uint8_t ext_len)
       if (sdn_ft_do_match(e->match_rule, data, ext_len)) {
 #if SDN_CONF_REFRESH_LIFETIME_ON_HIT
         /* If REFRESH_HITS is on, then we need to reset the lifetimer */
-        LOG_DBG("RESET entry timer!\n");
+        LOG_DBG("HIT refresh entry timer!\n");
         ctimer_restart(&e->lifetimer);
 #endif
         /* If the entry matches the datagram, we perform the associated
@@ -682,13 +682,13 @@ print_sdn_ft_action(sdn_ft_action_rule_t *a)
 void
 print_sdn_ft_entry(sdn_ft_entry_t *e)
 {
-// #if LOG_LEVEL == LOG_LEVEL_DBG
+#if LOG_LEVEL >= (LOG_LEVEL_DBG)
   LOG_DBG("ENTRY: (%p) id:%d ttl: %ld...\n", e, e->id, timer_remaining(&e->lifetimer.etimer.timer));
   sdn_ft_match_rule_t *m = e->match_rule;
   sdn_ft_action_rule_t *a = e->action_rule;
   print_sdn_ft_match(m);
   print_sdn_ft_action(a);
-// #endif
+#endif
 }
 
 /*---------------------------------------------------------------------------*/

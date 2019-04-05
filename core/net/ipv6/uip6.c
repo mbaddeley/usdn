@@ -100,7 +100,7 @@
 /* For Debug, logging, statistics                                            */
 /*---------------------------------------------------------------------------*/
 
-#define DEBUG 1
+#define DEBUG 0
 #include "net/ip/uip-debug.h"
 
 #if UIP_LOGGING == 1
@@ -1204,22 +1204,27 @@ uip_process(uint8_t flag)
 #if UIP_CONF_IPV6_SDN
   /* Explicitly don't check some messages */
   PRINTF("uip6: Next header is %d\n", *uip_next_hdr);
-  if( *uip_next_hdr == UIP_PROTO_ROUTING) {
-    PRINTF("uip6: Checking SDN for SRH\n");
-      uint8_t result = SDN_DRIVER.process(RPL_SRH);
-      switch(result) {
-        case UIP_DROP:
-          PRINTF("uip6: dropped\n");
-          goto drop; /* Don't deliver up the stack. Clear the uip buf */
-        case UIP_ACCEPT:
-          PRINTF("uip6: continue\n");
-          break;     /* Continue processing as normal */
-        default:
-          PRINTF("uip6: Unknown return value!\n");
-          return;    /* Return to calling process and don't clear the buf */
-      }
-  }
-  if( *uip_next_hdr != UIP_PROTO_ICMP6 &&
+  // if( *uip_next_hdr == UIP_PROTO_ROUTING) {
+  //   PRINTF("uip6: Checking SDN for SRH\n");
+  //     uint8_t result = SDN_DRIVER.process(RPL_SRH);
+  //     switch(result) {
+  //       case UIP_DROP:
+  //         PRINTF("uip6: dropped\n");
+  //         goto drop; /* Don't deliver up the stack. Clear the uip buf */
+  //       case UIP_ACCEPT:
+  //         PRINTF("uip6: continue\n");
+  //         break;     /* Continue processing as normal */
+  //       default:
+  //         PRINTF("uip6: Unknown return value!\n");
+  //         return;    /* Return to calling process and don't clear the buf */
+  //     }
+  // }
+  // if( *uip_next_hdr != UIP_PROTO_ICMP6 &&
+  //     !uip_ds6_is_my_addr(&UIP_IP_BUF->destipaddr) &&
+  //     !uip_ipaddr_cmp(&UIP_IP_BUF->destipaddr, &DEFAULT_CONTROLLER->ipaddr) &&
+  //     !uip_ds6_is_my_maddr(&UIP_IP_BUF->destipaddr)) {
+  if( *uip_next_hdr != UIP_PROTO_ROUTING &&
+      *uip_next_hdr != UIP_PROTO_ICMP6 &&
       !uip_ds6_is_my_addr(&UIP_IP_BUF->destipaddr) &&
       !uip_ipaddr_cmp(&UIP_IP_BUF->destipaddr, &DEFAULT_CONTROLLER->ipaddr) &&
       !uip_ds6_is_my_maddr(&UIP_IP_BUF->destipaddr)) {

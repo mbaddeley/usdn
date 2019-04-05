@@ -62,7 +62,7 @@
 /* Log configuration */
 #include "sys/log-ng.h"
 #define LOG_MODULE "SDN-STAT"
-#define LOG_LEVEL LOG_LEVEL_STAT
+#define LOG_LEVEL LOG_LEVEL_SDN
 #endif
 
 #define UIP_IP_BUF                ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
@@ -299,7 +299,7 @@ uip_icmp6_send(const uip_ipaddr_t *dest, int type, int code, int payload_len)
   UIP_STAT(++uip_stat.icmp.sent);
   UIP_STAT(++uip_stat.ip.sent);
 
-#if 0
+#if LOG_CONF_ICMP
   LOG_STAT("type:%d code:%d\n", type, code);
 #endif
 

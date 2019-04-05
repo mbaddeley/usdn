@@ -532,8 +532,8 @@ process(uint8_t flag) {
 
   /* Check why we are looking at the flowtables */
   switch(flag) {
-    case RPL_SRH:
-      goto srh;
+    // case RPL_SRH:
+    //   goto srh;
     case SDN_UIP:
       goto uip;
     case SDN_UDP:
@@ -543,15 +543,15 @@ process(uint8_t flag) {
       return UIP_DROP;
   }
 
-srh:
-  LOG_DBG("Checking srh...\n");
-  result = sdn_ft_check(WHITELIST, &uip_buf, uip_len, uip_ext_len);
-  if(result == SDN_NO_MATCH) {
-    LOG_DBG("No match! Return to upper layers (ACCEPT).\n");
-    return UIP_ACCEPT;
-  } else {
-    LOG_DBG("Match! Do something...\n");
-  }
+// srh:
+//   LOG_DBG("Checking srh...\n");
+//   result = sdn_ft_check(WHITELIST, &uip_buf, uip_len, uip_ext_len);
+//   if(result == SDN_NO_MATCH) {
+//     LOG_DBG("No match! Return to upper layers (ACCEPT).\n");
+//     return UIP_ACCEPT;
+//   } else {
+//     LOG_DBG("Match! Do something...\n");
+//   }
 
 uip:
   /* Check whitelist flowtable (i.e. for RPL DAO) */

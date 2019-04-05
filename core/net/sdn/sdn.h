@@ -47,7 +47,7 @@
 #include "sdn-ft.h"
 
 typedef enum SDN_FLAG {
-  RPL_SRH,
+  // RPL_SRH,
   SDN_UIP,
   SDN_UDP
 } sdn_flag_t;
@@ -242,7 +242,7 @@ struct uip_sdn_driver {
   void (* add_fwd_on_dest)(uip_ipaddr_t *dest, uip_ipaddr_t *fwd);
   void (* add_fwd_on_flow)(flowtable_id_t id, uint8_t flow, uip_ipaddr_t *fwd);
   void (* add_fallback_on_dest)(flowtable_id_t id, uip_ipaddr_t *dest);
-  void (* add_srh_on_dest)(flowtable_id_t id, uip_ipaddr_t *dest, sdn_node_id_t *route, uint8_t len);
+  void (* add_srh_on_dest)(flowtable_id_t id, uip_ipaddr_t *dest, sdn_node_id_t *path, uint8_t len);
   void (* add_accept_on_src)(flowtable_id_t id, uip_ipaddr_t *src);
   void (* add_accept_on_dest)(flowtable_id_t id, uip_ipaddr_t *dest);
   void (* add_accept_on_icmp6_type)(flowtable_id_t id, uint8_t type);

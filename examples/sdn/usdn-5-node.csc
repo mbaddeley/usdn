@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <simconf>
   <project EXPORT="discard">[APPS_DIR]/mrm</project>
   <project EXPORT="discard">[APPS_DIR]/mspsim</project>
@@ -15,7 +14,7 @@
       <transmitting_range>50.0</transmitting_range>
       <interference_range>0.0</interference_range>
       <success_ratio_tx>1.0</success_ratio_tx>
-      <success_ratio_rx>1.0</success_ratio_rx>
+      <success_ratio_rx>0.9</success_ratio_rx>
     </radiomedium>
     <events>
       <logoutput>40000</logoutput>
@@ -148,11 +147,29 @@
       </interface_config>
       <motetype_identifier>exp5438#2</motetype_identifier>
     </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        org.contikios.cooja.interfaces.Position
+        <x>182.51564145648075</x>
+        <y>0.3606709993312851</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        org.contikios.cooja.mspmote.interfaces.MspClock
+        <deviation>1.0</deviation>
+      </interface_config>
+      <interface_config>
+        org.contikios.cooja.mspmote.interfaces.MspMoteID
+        <id>6</id>
+      </interface_config>
+      <motetype_identifier>exp5438#2</motetype_identifier>
+    </mote>
   </simulation>
   <plugin>
     org.contikios.cooja.plugins.SimControl
     <width>280</width>
-    <z>2</z>
+    <z>4</z>
     <height>160</height>
     <location_x>400</location_x>
     <location_y>0</location_y>
@@ -166,10 +183,10 @@
       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.AttributeVisualizerSkin</skin>
-      <viewport>1.4594948026363215 0.0 0.0 1.4594948026363215 84.87495378340971 144.36231133960896</viewport>
+      <viewport>1.4791849966842674 0.0 0.0 1.4791849966842674 64.80226673093283 194.29803299617376</viewport>
     </plugin_config>
     <width>398</width>
-    <z>5</z>
+    <z>2</z>
     <height>395</height>
     <location_x>1</location_x>
     <location_y>1</location_y>
@@ -182,7 +199,7 @@
       <coloring />
     </plugin_config>
     <width>1190</width>
-    <z>4</z>
+    <z>6</z>
     <height>440</height>
     <location_x>2</location_x>
     <location_y>394</location_y>
@@ -195,13 +212,14 @@
       <mote>2</mote>
       <mote>3</mote>
       <mote>4</mote>
+      <mote>5</mote>
       <showRadioRXTX />
       <showRadioHW />
       <showLEDs />
       <zoomfactor>500.0</zoomfactor>
     </plugin_config>
     <width>1661</width>
-    <z>6</z>
+    <z>7</z>
     <height>166</height>
     <location_x>0</location_x>
     <location_y>836</location_y>
@@ -214,7 +232,7 @@
       <coloring />
     </plugin_config>
     <width>922</width>
-    <z>3</z>
+    <z>5</z>
     <height>439</height>
     <location_x>740</location_x>
     <location_y>396</location_y>
@@ -223,7 +241,7 @@
     org.contikios.cooja.plugins.ScriptRunner
     <plugin_config>
       <scriptfile>[CONTIKI_DIR]/examples/sdn/scripts/js/write-all.js</scriptfile>
-      <active>false</active>
+      <active>true</active>
     </plugin_config>
     <width>337</width>
     <z>1</z>
@@ -239,7 +257,7 @@
       <coloring />
     </plugin_config>
     <width>775</width>
-    <z>0</z>
+    <z>3</z>
     <height>400</height>
     <location_x>677</location_x>
     <location_y>0</location_y>

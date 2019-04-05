@@ -80,6 +80,7 @@ ifneq ($(BRMIN)$(BRMAX)$(DELAY),)
     CFLAGS += -DCONF_APP_BR_MAX=$(BRMAX)
 endif
 # Sending node
+# TXNODES=[1,2,3,4,5]
 ifneq ($(TXNODES),)
     CFLAGS += -DCONF_TX_NODES=$(TXNODES)
 endif
@@ -128,7 +129,7 @@ ifeq ($(WITH_SDN_STATS),1)
     PROJECTDIRS += ../../../core/net/sdn
     PROJECT_SOURCEFILES += sdn-stats.c
     CFLAGS += -DWITH_SDN_STATS=1 -DSDN_STATS_PERIOD=60
-    POWER ?= 0
+    POWER ?= 1
 ifeq ($(POWER),1)
     CFLAGS += -DCONTIKIMAC_CONF_COMPOWER=1 -DWITH_COMPOWER=1
     CFLAGS += -DSDN_STATS_CONF_POWER=1
@@ -141,4 +142,8 @@ ifneq ($(LOG_LEVEL_SDN),)
 endif
 ifneq ($(LOG_LEVEL_ATOM),)
     CFLAGS += -DLOG_CONF_LEVEL_ATOM=$(LOG_LEVEL_ATOM)
+endif
+LOG_ICMP ?= 1
+ifneq ($(LOG_ICMP),)
+CFLAGS += -DLOG_CONF_ICMP=$(LOG_ICMP)
 endif

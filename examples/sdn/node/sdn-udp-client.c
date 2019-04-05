@@ -109,11 +109,11 @@
 #define UDP_RPORT	8765
 #define UDP_LPORT	5678
 
-static int app_tx_node[CONF_NUM_APPS] = {TX_NODES};
-static int app_rx_node[CONF_NUM_APPS] = {RX_NODES};
-static float app_br_delay[CONF_NUM_APPS] = {CONF_APP_BR_DELAY};
-static float app_br_min[CONF_NUM_APPS] = {CONF_APP_BR_MIN};
-static float app_br_max[CONF_NUM_APPS] = {CONF_APP_BR_MAX};
+static int app_tx_node[] = {TX_NODES};
+static int app_rx_node[] = {RX_NODES};
+static float app_br_delay[] = {CONF_APP_BR_DELAY};
+static float app_br_min[] = {CONF_APP_BR_MIN};
+static float app_br_max[] = {CONF_APP_BR_MAX};
 static mflow_t *apps[CONF_NUM_APPS];
 
 /* Receiving node address */
@@ -348,6 +348,10 @@ print_sim_info(void)
 #if UIP_CONF_IPV6_SDN
   LOG_INFO("NSU_FREQ=%d ", DEFAULT_CONTROLLER->update_period);
   LOG_INFO_("FT_LIFETIME=%d\n", (int)(SDN_CONF.ft_lifetime / CLOCK_SECOND));
+  LOG_INFO("FORCE_NSU=%u , FT_REFRESH=%u, FT_RETRY%u\n",
+            SDN_CONF_FORCE_UPDATE,
+            SDN_CONF_REFRESH_LIFETIME_ON_HIT,
+            SDN_CONF_RETRY_AFTER_QUERY);
 #endif
 
   /* Print other node information */
