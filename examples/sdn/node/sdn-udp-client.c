@@ -141,7 +141,8 @@ send(mflow_t *a)
   /* check if we are connected to the sdn controller, and we have a flowtable
      entry for the destination. If we don't then we need to query */
   if(sdn_connected()) {
-    if(sdn_ft_contains(&a->remote_addr, sizeof(uip_ipaddr_t))) {
+    // if(sdn_ft_contains(&a->remote_addr, sizeof(uip_ipaddr_t))) {
+    // if(sdn_ft_check(FLOWTABLE, &a->remote_addr, sizeof(uip_ipaddr_t), 0)) {
 #endif /* UIP_CONF_IPV6_SDN */
 
       /* check we have a rpl dag */
@@ -165,10 +166,10 @@ send(mflow_t *a)
       }
 
 #if UIP_CONF_IPV6_SDN
-    } else {
-      // /* Send a FTQ to the controller to find a path */
-      controller_query_data(&a->remote_addr, sizeof(uip_ipaddr_t));
-    }
+    // } else {
+    //   // /* Send a FTQ to the controller to find a path */
+    //   controller_query_data(&a->remote_addr, sizeof(uip_ipaddr_t));
+    // }
   } else {
     LOG_WARN("app %d can't send, no controller\n", a->id);
   }

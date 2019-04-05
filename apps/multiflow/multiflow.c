@@ -50,8 +50,8 @@
 
 /* Log configuration */
 #include "sys/log-ng.h"
-#define LOG_MODULE "USDN-APP"
-#define LOG_LEVEL LOG_LEVEL_SDN
+#define LOG_MODULE "MFLOW"
+#define LOG_LEVEL LOG_LEVEL_DBG
 
 static uint8_t databuffer[UIP_BUFSIZE];
 #define UIP_IP_BUF   ((struct uip_udpip_hdr *)&uip_buf[UIP_LLH_LEN])

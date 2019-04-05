@@ -44,7 +44,7 @@
 /* Log configuration */
 #include "sys/log-ng.h"
 #define LOG_MODULE "ATOM"
-#define LOG_LEVEL LOG_LEVEL_ATOM
+#define LOG_LEVEL LOG_LEVEL_DBG
 
 /* Search */
 static atom_node_t *stack[ATOM_MAX_NODES];  /* Stack for searching */
@@ -54,35 +54,37 @@ static int top = -1;                  /* Keeps track of the stack index */
 static atom_node_t *spath[ATOM_MAX_NODES];  /* Keeps track of shortest path */
 static int spath_length = ATOM_MAX_NODES;  /* Assume worst case */
 
+static uint8_t found = 0;
+
 /*---------------------------------------------------------------------------*/
 /* Printing */
 /*---------------------------------------------------------------------------*/
 // static void
 // print_stack() {
 //   int i;
-//   PRINTF("ATOM-APP : STACK ================\n\n");
-//   PRINTF("ATOM-APP : \n\n");
+//   printf("ATOM-APP : STACK ================\n\n");
+//   printf("ATOM-APP : \n\n");
 //   for(i = 0; i <= top; i++) {
-//     PRINTF(" %d ", stack[i]->id);
+//     printf(" %d ", stack[i]->id);
 //   }
-//   PRINTF("\nATOM-APP : ======================\n\n");
+//   printf("\nATOM-APP : ======================\n\n");
 // }
 /*---------------------------------------------------------------------------*/
 // static void
 // print_shortest_path() {
 //   int i;
 //   for(i = 0; i < spath_length; i++) {
-//     PRINTF(" %d ", spath[i]->id);
+//     printf(" %d ", spath[i]->id);
 //   }
 // }
 
 /*---------------------------------------------------------------------------*/
-#if LOG_LEVEL >= LOG_LEVEL_DBG
+#if LOG_LEVEL >= (LOG_LEVEL_DBG)
 static void
 print_route(sdn_srh_route_t *route) {
   int i;
   for(i = 0; i < route->length; i++) {
-    LOG_DBG_(" %d ", route->nodes[i]);
+    LOG_DBG_(" %d", route->nodes[i]);
   }
 }
 #else
@@ -150,11 +152,13 @@ copy_to_spath() {
 static void
 depth_first_search(atom_node_t *src, atom_node_t *dest)
 {
-  int i;
+  uint8_t i;
   atom_node_t *new_src;
+
   if(src != NULL && dest != NULL) {
     /* push to the search stack */
     push(src);
+    // LOG_DBG("%u->%u\n", src->id, dest->id);
     /* Check if we have reached the destination */
     if(src->id == dest->id) {
       /* If this stack is the shortest we want to copy the path */
@@ -166,16 +170,23 @@ depth_first_search(atom_node_t *src, atom_node_t *dest)
       pop(src);
       return;
     }
+
     /* If we havent reached the destination, then search the neighbours that
        haven't been visited */
-    for(i = 0; i < src->num_links; i++) {
-      if(!contains(src->links[i].dest_id)) {
-        new_src = atom_net_get_node_id(src->links[i].dest_id);
-        if(new_src != NULL) {
-          depth_first_search(new_src, dest);
-        } else {
-          LOG_ERR("ERROR DFS could not find node!\n");
-        }
+    // if(!found) {
+      for(i = 0; i < src->num_links; i++) {
+        if(!contains(src->links[i].dest_id)) {
+          new_src = atom_net_get_node_id(src->links[i].dest_id);
+          if(new_src != NULL) {
+            // FIXME: There is an issue with DFS in networks of > 20/30 nodes, as it takes too long to compute.
+            depth_first_search(new_src, dest);
+          } else {
+            LOG_ERR("ERROR DFS could not find node!\n");
+          }
+        // } else {
+        //   found = 1;
+        //   LOG_DBG("FOUND %u->%u (%u)\n", src->id, dest->id, spath_length);
+        // }
       }
     }
     /* Pop the stack */
@@ -232,7 +243,7 @@ run(void *data)
     print_route(&route);
     LOG_DBG_("\n");
   } else {
-    LOG_ERR("ERROR No path between [%d] and [%d]! MAX_NODES=%d",
+    LOG_ERR("ERROR No path between [%d] and [%d]! MAX_NODES=%d\n",
       src->id, dest->id, ATOM_MAX_NODES);
     return NULL;
   }

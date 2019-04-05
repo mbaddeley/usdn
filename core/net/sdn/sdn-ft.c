@@ -67,6 +67,7 @@ static int current_id = 0;
 #define generate_id() (++current_id % ID_MAX)
 
 /* Flowtables */
+static sdn_ft_entry_t *default_entry  = NULL;
 static sdn_ft_match_rule_t *default_match  = NULL;
 static sdn_ft_action_rule_t *default_action = NULL;
 LIST(whitelist);
@@ -235,6 +236,7 @@ entry_timedout(void *ptr) {
   LOG_DBG("TIMEOUT Flowtable entry timed out! (%p)\n", e);
   /* Check to see if this was the default entry */
   if(default_cmp(e)){
+    default_entry = NULL;
     default_match = NULL;
     default_action = NULL;
   }
@@ -400,6 +402,10 @@ sdn_ft_check_list(list_t list, void *data, uint16_t len, uint8_t ext_len)
         print_sdn_ft_entry(e);
         LOG_DBG("Returning action!\n");
         return ft_action_handler(e->action_rule, data);
+      } else {
+        LOG_DBG("Could not ding match for");
+        LOG_DBG_6ADDR((uip_ip6addr_t *)data);
+        LOG_DBG_("\n");
       }
     }
     e = e->next;
@@ -414,8 +420,9 @@ sdn_ft_check_list(list_t list, void *data, uint16_t len, uint8_t ext_len)
 /*                              Default Match                                */
 /*---------------------------------------------------------------------------*/
 static void
-set_default(sdn_ft_match_rule_t *m, sdn_ft_action_rule_t *a)
+set_default(sdn_ft_entry_t *e, sdn_ft_match_rule_t *m, sdn_ft_action_rule_t *a)
 {
+  default_entry = e;
   default_match = m;
   default_action = a;
 }
@@ -432,6 +439,11 @@ sdn_ft_check_default(void *data, uint8_t length, uint8_t ext_len)
        /* See if we have a successful match */
       if (sdn_ft_do_match(default_match, data, ext_len)) {
         /* If the match is a hit, we do a fast copy into the datagram */
+#if SDN_CONF_REFRESH_LIFETIME_ON_HIT
+        /* If REFRESH_HITS is on, then we need to reset the lifetimer */
+        LOG_DBG("HIT refresh entry timer!\n");
+        ctimer_restart(&default_entry->lifetimer);
+#endif
         LOG_DBG("Default match! Do fast copy...\n");
         return ft_action_handler(default_action, data);
       }
@@ -533,7 +545,7 @@ sdn_ft_create_entry(flowtable_id_t id,
       }
       /* Check if we are to set this entry as default */
       if(is_default) {
-        set_default(e->match_rule, e->action_rule);
+        set_default(e, e->match_rule, e->action_rule);
       }
       /* Return a pointer to this entry */
       return e;

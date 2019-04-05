@@ -47,6 +47,10 @@ extern uint16_t uip_slen;
 #if UIP_CONF_IPV6_SDN
 #include "sdn.h"
 #include "sdn-cd.h"
+/* Log configuration */
+#include "sys/log-ng.h"
+#define LOG_MODULE "UIP-UDP"
+#define LOG_LEVEL LOG_LEVEL_SDN
 #endif /* UIP_CONF_IPV6_SDN */
 
 #include <stdio.h>
@@ -70,7 +74,7 @@ uip_udp_packet_send(struct uip_udp_conn *c, const void *data, int len)
   /* uip_process set up the udp packet for us, and bypassed the sdn.process()
      in uip6 */
   if(!uip_ipaddr_cmp(&uip_udp_conn->ripaddr, &DEFAULT_CONTROLLER->ipaddr)) {
-    // printf("uip-udp: Checking SDN\n");
+    LOG_DBG("Checking SDN UDP\n");
     uint8_t result = SDN_DRIVER.process(SDN_UDP);
     switch(result) {
       case UIP_DROP:
