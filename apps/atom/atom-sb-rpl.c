@@ -83,10 +83,11 @@ in(void) {
 
   if(hdr != NULL && hdr->type == ICMP6_RPL) {
       /* Print out some stats */
-    LOG_STAT("IN %s s:%d d:%d\n",
+    LOG_STAT("RX %s s:%u d:%u h:%u\n",
             RPL_CODE_STRING(hdr->icode),
             C_IP_BUF->srcipaddr.u8[15],
-            C_IP_BUF->destipaddr.u8[15]);
+            C_IP_BUF->destipaddr.u8[15],
+            c_hops);
 
     /* Convert the input into an action */
     atom_action_t *action = NULL;

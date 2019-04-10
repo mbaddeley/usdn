@@ -58,13 +58,6 @@
 #define PRINT6ADDR(addr)
 #endif
 
-#if WITH_SDN_STATS
-/* Log configuration */
-#include "sys/log-ng.h"
-#define LOG_MODULE "SDN-STAT"
-#define LOG_LEVEL LOG_LEVEL_SDN
-#endif
-
 #define UIP_IP_BUF                ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
 #define UIP_ICMP_BUF            ((struct uip_icmp_hdr *)&uip_buf[uip_l2_l3_hdr_len])
 #define UIP_ICMP6_ERROR_BUF  ((struct uip_icmp6_error *)&uip_buf[uip_l2_l3_icmp_hdr_len])
@@ -74,6 +67,14 @@
 #if UIP_CONF_IPV6_RPL
 #include "rpl/rpl.h"
 #endif /* UIP_CONF_IPV6_RPL */
+
+
+#if LOG_CONF_ICMP
+/* Log configuration */
+#include "sys/log-ng.h"
+#define LOG_MODULE "SDN-STAT"
+#define LOG_LEVEL LOG_LEVEL_SDN
+#endif
 
 /** \brief temporary IP address */
 static uip_ipaddr_t tmp_ipaddr;

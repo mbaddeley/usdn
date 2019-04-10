@@ -301,11 +301,12 @@ send(sdn_controller_t *c, uint8_t length, void *data)
   LOG_DBG("Sending %s len:%d\n", USDN_CODE_STRING(hdr->typ), length);
   if(c != NULL) {
     /* Output some info and send */
-    LOG_STAT("OUT %s s:%d d:%d id:%d\n",
+    LOG_STAT("TX %s s:%d d:%d id:%d h:%u\n",
              USDN_CODE_STRING(hdr->typ),
              uip_lladdr.addr[7],
              c->ipaddr.u8[15],
-             hdr->flow);
+             hdr->flow,
+             SDN_CONF.hops);
     /* Send to the controller */
     SDN_ADAPTER.send(c, length, data);
   } else {
@@ -463,7 +464,7 @@ in(void *data, uint8_t length, void *ptr)
 {
   usdn_hdr_t *hdr = (usdn_hdr_t *)data;
   /* IN type src txid hops */
-  LOG_STAT("IN %s s:%d d:%d id:%d h:%d\n",
+  LOG_STAT("RX %s s:%d d:%d id:%d h:%d\n",
             USDN_CODE_STRING(hdr->typ),
             UIP_IP_BUF->srcipaddr.u8[sizeof(UIP_IP_BUF->srcipaddr.u8) - 1],
             UIP_IP_BUF->destipaddr.u8[sizeof(UIP_IP_BUF->destipaddr.u8) - 1],

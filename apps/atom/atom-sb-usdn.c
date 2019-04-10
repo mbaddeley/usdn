@@ -254,12 +254,12 @@ usdn_receive(struct simple_udp_connection *c,
 {
   /* Spit out some stats */
   uint8_t hops = uip_ds6_if.cur_hop_limit - UIP_IP_BUF->ttl + 1;
-  LOG_STAT("BUF %s s:%d d:%d id:%d h:%d\n",
-          USDN_CODE_STRING(UIP_USDN_BUF->typ),
-          UIP_IP_BUF->srcipaddr.u8[15],
-          UIP_IP_BUF->destipaddr.u8[15],
-          UIP_USDN_BUF->flow,
-          hops);
+  // LOG_STAT("BUF %s s:%d d:%d id:%d h:%d\n",
+  //         USDN_CODE_STRING(UIP_USDN_BUF->typ),
+  //         UIP_IP_BUF->srcipaddr.u8[15],
+  //         UIP_IP_BUF->destipaddr.u8[15],
+  //         UIP_USDN_BUF->flow,
+  //         hops);
   /* Post to the controller queue */
   atom_post(&sb_usdn);
 }
@@ -280,7 +280,7 @@ in(void) {
 
   /* Print out some stats */
   usdn_hdr_t *hdr = C_USDN_HDR;
-  LOG_STAT("IN %s s:%d d:%d id:%d h:%u\n",
+  LOG_STAT("RX %s s:%d d:%d id:%d h:%u\n",
           USDN_CODE_STRING(hdr->typ),
           C_IP_BUF->srcipaddr.u8[15],
           C_IP_BUF->destipaddr.u8[15],
@@ -363,7 +363,7 @@ out(atom_action_t *action, atom_response_t *response)
   /* Is there data to send? */
   if(s_len > 0) {
     /* Spit out some stats */
-    LOG_STAT("OUT %s s:%d d:%d id:%d\n",
+    LOG_STAT("TX %s s:%d d:%d id:%d\n",
                USDN_CODE_STRING(hdr->typ),
                node_id,
                response->dest.u8[15],

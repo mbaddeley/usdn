@@ -54,7 +54,7 @@ static int top = -1;                  /* Keeps track of the stack index */
 static atom_node_t *spath[ATOM_MAX_NODES];  /* Keeps track of shortest path */
 static int spath_length = ATOM_MAX_NODES;  /* Assume worst case */
 
-static uint8_t found = 0;
+// static uint8_t found = 0;
 
 /*---------------------------------------------------------------------------*/
 /* Printing */

@@ -68,7 +68,7 @@
 
 #define DEBUG 0
 
-#if WITH_SDN_STATS
+#if UIP_CONF_IPV6_SDN
 // NB: Need this here so we can output when we receive the dao
 /* Log configuration */
 #include "sys/log-ng.h"

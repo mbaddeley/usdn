@@ -158,9 +158,10 @@ send(mflow_t *a)
 #endif /* UIP_CONF_IPV6_SDN */
         sprintf((char *)buf + pos, "a:%d id:%d", a->id, a->seq);
         /*TX APP src dest appid appseq */
-        LOG_STAT("TX APP s:%d d:%d %s\n",
+        LOG_STAT("TX APP s:%d d:%d h:%u %s\n",
           node_id,
           a->remote_addr.u8[15],
+          SDN_CONF.hops,
           (buf + pos));
           mflow_send(a, &buf, strlen((char *)(buf + pos)) + pos);
       }
