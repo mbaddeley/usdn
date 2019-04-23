@@ -189,6 +189,7 @@ Where is everything?
 - Port to Contiki-NG (waiting for exp5438 motes to be supported)
 
 ### Known Issues
+- Shortest Path Routing doesn't work well with larger network sizes (30+), use RPL-NS routing in this case! This is because it takes too long to compute all the possible paths on the central atom controller, and there are no checks to queue additional requests while it's computing. 
 - Lots ;) Just ask if you have problems and I'll try to help as best I can.
 
 ---
