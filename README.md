@@ -1,7 +1,3 @@
-WARNING: THIS REPO IS NOW DEPRECATED
-===
-*This repo has now been deprecated in favour of μSDN-NG [here](https://github.com/mbaddeley/usdn-ng). All future updates will be pushed to μSDN-NG.*
-
 μSDN - Low-Power Wireless SDN for Contiki.
 ===
 
