@@ -2,7 +2,6 @@
 ===
 
 This repo uses a very old version of Contiki, and has now been deprecated in favour of [uSDN-NG](https://github.com/mbaddeley/usdn-ng) which ports all the core features to [Contiki-NG](https://github.com/contiki-ng/contiki-ng), and supports both Cooja motes and Z1 motes in the Cooja simulator. **I strongly recommend using uSDN-NG over the old uSDN**.
-
 ===
 
 Intro
