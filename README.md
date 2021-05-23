@@ -1,9 +1,6 @@
 μSDN - Low-Power Wireless SDN for Contiki.
 ===
 
-This repo uses a very old version of Contiki, and has now been deprecated in favour of [uSDN-NG](https://github.com/mbaddeley/usdn-ng) which ports all the core features to [Contiki-NG](https://github.com/contiki-ng/contiki-ng), and supports both Cooja motes and Z1 motes in the Cooja simulator. **I strongly recommend using uSDN-NG over the old uSDN**.
-===
-
 Intro
 ---
 This repo hosts the source code of μSDN, which we published in the NetSoft 2018 conference ([paper](evolving-sdn-for-low-power-iot-networks.pdf),  [slides](netsoft20181.pdf)). μSDN is also in the process of being ported to Contiki-NG (which will supersede this version), you can check out the μSDN-NG repo progess [here](https://github.com/mbaddeley/usdn-ng).
